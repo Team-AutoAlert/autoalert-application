@@ -8,7 +8,7 @@ export default function MechanicHome() {
       <Text className="text-3xl font-bold mb-4 text-blue-600">Mechanic Portal</Text>
       <Text className="text-lg text-gray-700 mb-8">Welcome! Please log in to continue.</Text>
 
-      <Link href="/mechanic/login" asChild>
+      <Link href="/views/mechanic/login" asChild>
         <TouchableOpacity className="bg-blue-600 px-6 py-3 rounded-lg">
           <Text className="text-white font-medium text-base">Go to Login</Text>
         </TouchableOpacity>

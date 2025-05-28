@@ -48,7 +48,7 @@ export default function MechanicLogin() {
         <Text className="text-center text-white text-base font-medium">Login</Text>
       </TouchableOpacity>
 
-      <Link href="/mechanic" asChild>
+      <Link href="/views/mechanic" asChild>
         <TouchableOpacity className="mt-4">
            <Text className="text-blue-500">← Back to Home</Text>
         </TouchableOpacity>
