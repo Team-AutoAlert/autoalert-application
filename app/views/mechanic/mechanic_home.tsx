@@ -36,6 +36,15 @@ export default function MechanicHome() {
           <Text className="text-gray-300">Kalutara</Text>
         </View>
       </View>
+
+      {/* Availability & Jobs */}
+      <View className="mb-4">
+        <Text className="text-white">Availability:</Text>
+        <Text className="text-red-500 font-bold bg-white px-3 py-1 rounded-full w-20 text-center mt-1">Busy</Text>
+      </View>
+      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-4 font-semibold">
+        ● Jobs Ongoing
+      </Text>
       
     </View>
   );
