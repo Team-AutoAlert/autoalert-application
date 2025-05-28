@@ -55,6 +55,22 @@ export default function MechanicHome() {
           <FontAwesome name="video-camera" size={28} color="white" />
         </TouchableOpacity>
       </View>
+
+      {/* Bottom Navigation */}
+      <View className="absolute bottom-4 left-0 right-0 px-4 flex-row justify-between">
+        <TouchableOpacity>
+          <Ionicons name="home" size={26} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <MaterialIcons name="assignment" size={26} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="alert-circle" size={26} color="red" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons name="notifications" size={26} color="white" />
+        </TouchableOpacity>
+      </View>
       
     </View>
   );
