@@ -45,6 +45,16 @@ export default function MechanicHome() {
       <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-4 font-semibold">
         ● Jobs Ongoing
       </Text>
+
+      {/* Quick Action Buttons */}
+      <View className="flex-row justify-between px-10 mb-4">
+        <TouchableOpacity className="bg-gray-600 p-4 rounded-full">
+          <FontAwesome name="microphone" size={28} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity className="bg-green-600 p-4 rounded-full">
+          <FontAwesome name="video-camera" size={28} color="white" />
+        </TouchableOpacity>
+      </View>
       
     </View>
   );
