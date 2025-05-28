@@ -23,6 +23,19 @@ export default function MechanicHome() {
         </TouchableOpacity>
       </View>
 
+      {/* Mechanic Info Card */}
+      <View className="bg-gray-700 p-4 rounded-lg flex-row items-center mb-4">
+        <Image
+          source={require("@/assets/mechanic.png")} // Replace with your image path
+          className="w-16 h-16 rounded-full mr-4"
+        />
+        <View>
+          <Text className="text-white text-lg font-bold">Hi Saman</Text>
+          <Text className="text-yellow-400">★★★★★</Text>
+          <Text className="text-gray-300">0762345656</Text>
+          <Text className="text-gray-300">Kalutara</Text>
+        </View>
+      </View>
       
     </View>
   );
