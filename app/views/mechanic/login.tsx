@@ -1,11 +1,12 @@
-// app/mechanic/login.tsx
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { useRouter } from "expo-router";
 import { Link } from "expo-router";
 
 export default function MechanicLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleLogin = () => {
     if (!email || !password) {
@@ -13,9 +14,12 @@ export default function MechanicLogin() {
       return;
     }
 
-    // Example login logic (replace with API call)
+    // Example login logic (replace with real API call)
     if (email === "mechanic@example.com" && password === "password123") {
       Alert.alert("Success", "Logged in successfully!");
+      setTimeout(() => {
+        router.replace("/views/mechanic/mechanic_home"); // ✅ Redirect to Mechanic Home
+      }, 500);
     } else {
       Alert.alert("Error", "Invalid credentials.");
     }
@@ -30,6 +34,7 @@ export default function MechanicLogin() {
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+        autoCapitalize="none"
         className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
       />
 
@@ -48,9 +53,9 @@ export default function MechanicLogin() {
         <Text className="text-center text-white text-base font-medium">Login</Text>
       </TouchableOpacity>
 
-      <Link href="/views/mechanic" asChild>
+      <Link href="/" asChild>
         <TouchableOpacity className="mt-4">
-           <Text className="text-blue-500">← Back to Home</Text>
+          <Text className="text-blue-500">← Back to Main Home</Text>
         </TouchableOpacity>
       </Link>
     </View>
