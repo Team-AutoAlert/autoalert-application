@@ -26,7 +26,7 @@ export default function MechanicHome() {
       {/* Mechanic Info Card */}
       <View className="bg-gray-700 p-4 rounded-lg flex-row items-center mb-4">
         <Image
-          source={require("@/assets/mechanic.png")} // Replace with your image path
+          source={require("../../../assets/images/mechanic.png")}// Replace with your image path
           className="w-16 h-16 rounded-full mr-4"
         />
         <View>
