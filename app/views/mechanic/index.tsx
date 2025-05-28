@@ -20,7 +20,7 @@ export default function MechanicHome() {
       {/* Sign Up Link */}
       <View className="flex-row">
         <Text className="text-gray-700 text-base">New User? </Text>
-        <Link href="/views/mechanic/sign_up" asChild>
+        <Link href="/views/mechanic/sign_up_step1" asChild>
           <TouchableOpacity>
             <Text className="text-blue-600 text-base font-semibold">Sign Up</Text>
           </TouchableOpacity>
