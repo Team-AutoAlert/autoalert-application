@@ -71,6 +71,33 @@ export default function MechanicHome() {
           <Ionicons name="notifications" size={26} color="white" />
         </TouchableOpacity>
       </View>
+
+      {/* Slide Menu */}
+      {menuOpen && (
+        <View className="absolute top-0 left-0 bottom-0 w-2/3 bg-gray-100 px-4 py-10 z-50">
+          <TouchableOpacity className="mb-6">
+            <FontAwesome name="user-circle" size={28} color="#444" />
+          </TouchableOpacity>
+          <TouchableOpacity className="mb-4 border-b border-gray-400 pb-2">
+            <Text className="text-lg text-gray-800">Mech Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="mb-4 border-b border-gray-400 pb-2">
+            <Text className="text-lg text-gray-800">Skills</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="mb-4 border-b border-gray-400 pb-2">
+            <Text className="text-lg text-gray-800">Experience</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="mb-4 border-b border-gray-400 pb-2">
+            <Text className="text-lg text-gray-800">Payment Account Option</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="mb-4 border-b border-gray-400 pb-2">
+            <Text className="text-lg text-gray-800">Add Certification</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="mb-4 border-b border-gray-400 pb-2">
+            <Text className="text-lg text-gray-800">Mech Rating</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       
     </View>
   );
