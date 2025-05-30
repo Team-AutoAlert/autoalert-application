@@ -68,7 +68,7 @@ export default function MobileVerify() {
       </View>
       {/* Verify Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/driver/contact_info")}
+        onPress={() => router.push("/views/driver/vehicle_info")}
         className="w-full bg-blue-300 py-3 rounded-xl mb-3 border-2 border-white"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
