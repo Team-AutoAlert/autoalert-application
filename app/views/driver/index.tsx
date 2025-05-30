@@ -18,7 +18,7 @@ export default function DriverHome() {
       </Text>
 
       {/* Login Button */}
-      <Link href="/views/driver/login" asChild>
+      <Link href="/views/driver/driver_login" asChild>
         <TouchableOpacity className="bg-blue-300 px-12 py-3 rounded-lg mb-8">
           <Text className="text-white font-medium text-xl">LOGIN</Text>
         </TouchableOpacity>
