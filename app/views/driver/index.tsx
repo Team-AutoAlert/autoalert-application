@@ -27,7 +27,7 @@ export default function DriverHome() {
       {/* Sign Up Link */}
       <View className="flex-row">
         <Text className="text-white text-base">New User?</Text>
-        <Link href="/views/driver/signup" asChild>
+        <Link href="/views/driver/sign_up_form" asChild>
           <TouchableOpacity>
             <Text className="text-red-500 text-base font-semibold"> Sign Up</Text>
           </TouchableOpacity>
