@@ -73,7 +73,7 @@ export default function SignUpForm() {
 
       {/* Next Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/mechanic/sign_up_step2")}
+        onPress={() => router.push("/views/driver/email_verify")}
         className="bg-blue-300 w-full py-4 rounded-xl"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
