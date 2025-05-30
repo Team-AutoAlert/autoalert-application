@@ -3,11 +3,14 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 
+const LANGUAGES = ["English", "Sinhala", "Tamil"];
+
 export default function ContactInfo() {
   const router = useRouter();
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [language, setLanguage] = useState("English");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <View className="flex-1 justify-center items-center bg-black px-6">
@@ -44,9 +47,31 @@ export default function ContactInfo() {
 
       {/* Preferred Language */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Prefered Language</Text>
-      <View className="flex-row items-center border-2 border-white rounded-xl w-full mb-12 px-4 py-2 bg-transparent">
-        <Text className="text-white font-mono text-lg flex-1">{language}</Text>
-        <Text className="text-white text-xl ml-2">♡</Text>
+      <View className="w-full mb-12">
+        <TouchableOpacity
+          className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
+          onPress={() => setDropdownOpen(!dropdownOpen)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white font-mono text-lg flex-1">{language}</Text>
+          <Text className="text-white text-xl ml-2">▼</Text>
+        </TouchableOpacity>
+        {dropdownOpen && (
+          <View className="absolute top-14 left-0 w-full bg-black border-2 border-white rounded-xl z-10">
+            {LANGUAGES.map((lang) => (
+              <TouchableOpacity
+                key={lang}
+                onPress={() => {
+                  setLanguage(lang);
+                  setDropdownOpen(false);
+                }}
+                className="px-4 py-2"
+              >
+                <Text className="text-white font-mono text-lg">{lang}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </View>
 
       {/* Next Button */}
