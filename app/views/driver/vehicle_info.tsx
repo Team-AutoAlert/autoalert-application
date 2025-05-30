@@ -1,6 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
+import { VEHICLE_BRANDS } from "../../constants/vehicle_brands"; // Adjust path as needed
 
 const VEHICLE_TYPES = [
   "Car",
@@ -14,23 +15,12 @@ const VEHICLE_TYPES = [
   "Other"
 ];
 
-const BRANDS = [
-  "Bajaj",
-  "BMW",
-  "Mazda",
-  "Nissan",
-  "Tata",
-  "Tesla",
-  "Toyota",
-  "Yamaha"
-];
-
 export default function VehicleInfo() {
   const router = useRouter();
   const [vehicleType, setVehicleType] = useState("Car");
   const [vehicleTypeDropdown, setVehicleTypeDropdown] = useState(false);
 
-  const [make, setMake] = useState("Bajaj");
+  const [make, setMake] = useState("Acura");
   const [makeDropdown, setMakeDropdown] = useState(false);
 
   const [vehicleNo, setVehicleNo] = useState("");
@@ -105,8 +95,8 @@ export default function VehicleInfo() {
           <Text className="text-white text-xl ml-2">▼</Text>
         </TouchableOpacity>
         {makeDropdown && (
-          <View className="absolute top-14 left-0 w-full bg-black border-2 border-white rounded-xl z-10">
-            {BRANDS.map((brand) => (
+          <ScrollView className="absolute top-14 left-0 w-full max-h-60 bg-black border-2 border-white rounded-xl z-10">
+            {VEHICLE_BRANDS.map((brand) => (
               <TouchableOpacity
                 key={brand}
                 onPress={() => {
@@ -118,7 +108,7 @@ export default function VehicleInfo() {
                 <Text className="text-white font-mono text-lg">{brand}</Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         )}
       </View>
 
