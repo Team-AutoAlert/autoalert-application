@@ -86,21 +86,33 @@ export default function EmailVerify() {
       </TouchableOpacity>
       {/* Keypad */}
       <View className="w-56">
-        {[["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", ""]].map((row, rIdx) => (
+        {[["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", "⌫"]].map((row, rIdx) => (
           <View key={rIdx} className="flex-row justify-between mb-3">
-            {row.map((num, cIdx) =>
-              num ? (
-                <TouchableOpacity
-                  key={num}
-                  onPress={() => handleKeyPress(num)}
-                  className="w-14 h-14 bg-white rounded-xl justify-center items-center"
-                >
-                  <Text className="text-black text-2xl font-mono">{num}</Text>
-                </TouchableOpacity>
-              ) : (
-                <View key={cIdx} className="w-14 h-14" />
-              )
-            )}
+            {row.map((num, cIdx) => {
+              if (num === "") {
+                return <View key={cIdx} className="w-14 h-14" />;
+              } else if (num === "⌫") {
+                return (
+                  <TouchableOpacity
+                    key={num}
+                    onPress={handleBackspace}
+                    className="w-14 h-14 bg-gray-200 rounded-xl justify-center items-center"
+                  >
+                    <Text className="text-black text-2xl font-mono">⌫</Text>
+                  </TouchableOpacity>
+                );
+              } else {
+                return (
+                  <TouchableOpacity
+                    key={num}
+                    onPress={() => handleKeyPress(num)}
+                    className="w-14 h-14 bg-white rounded-xl justify-center items-center"
+                  >
+                    <Text className="text-black text-2xl font-mono">{num}</Text>
+                  </TouchableOpacity>
+                );
+              }
+            })}
           </View>
         ))}
       </View>
