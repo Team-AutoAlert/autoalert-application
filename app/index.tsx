@@ -10,7 +10,7 @@ export default function Index() {
                 <Text className="text-white font-medium text-base">Go to Mechanic Login</Text>
               </TouchableOpacity>
       </Link>
-      <Link href="/views/mechanic" asChild>
+      <Link href="/views/driver" asChild>
               <TouchableOpacity className="bg-blue-600 px-6 py-3 rounded-lg">
                 <Text className="text-white font-medium text-base">Go to Driver Login</Text>
               </TouchableOpacity>
