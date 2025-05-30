@@ -1,4 +1,3 @@
-// app/views/mechanic/index.tsx
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Link } from "expo-router";
 
@@ -19,18 +18,18 @@ export default function DriverHome() {
       </Text>
 
       {/* Login Button */}
-      <Link href="/views/driver/#" asChild>
-        <TouchableOpacity className="bg-blue-600 px-6 py-3 rounded-lg mb-4">
-          <Text className="text-white font-medium text-base">Go to Login</Text>
+      <Link href="/views/driver/login" asChild>
+        <TouchableOpacity className="bg-blue-300 px-12 py-3 rounded-lg mb-8">
+          <Text className="text-white font-medium text-xl">LOGIN</Text>
         </TouchableOpacity>
       </Link>
 
       {/* Sign Up Link */}
       <View className="flex-row">
-        <Text className="text-gray-700 text-base">New User? </Text>
-        <Link href="/views/driver/#" asChild>
+        <Text className="text-white text-base">New User?</Text>
+        <Link href="/views/driver/signup" asChild>
           <TouchableOpacity>
-            <Text className="text-blue-600 text-base font-semibold">Sign Up</Text>
+            <Text className="text-red-500 text-base font-semibold"> Sign Up</Text>
           </TouchableOpacity>
         </Link>
       </View>
