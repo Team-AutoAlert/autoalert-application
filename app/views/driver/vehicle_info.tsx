@@ -2,9 +2,22 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 
+const VEHICLE_TYPES = [
+  "Car",
+  "Van",
+  "Motor Cycle",
+  "SUV",
+  "Pickup",
+  "Bus",
+  "Lorry",
+  "Three Wheel",
+  "Other"
+];
+
 export default function VehicleInfo() {
   const router = useRouter();
-  const [vehicleType, setVehicleType] = useState("");
+  const [vehicleType, setVehicleType] = useState("Car");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [vehicleNo, setVehicleNo] = useState("");
   const [model, setModel] = useState("");
   const [brand, setBrand] = useState("");
@@ -17,15 +30,34 @@ export default function VehicleInfo() {
         Vehicle Details
       </Text>
 
-      {/* Vehicle Type */}
+      {/* Vehicle Type Dropdown */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Vehicle Type</Text>
-      <TextInput
-        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
-        value={vehicleType}
-        onChangeText={setVehicleType}
-        placeholder=""
-        placeholderTextColor="#aaa"
-      />
+      <View className="w-full mb-3">
+        <TouchableOpacity
+          className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
+          onPress={() => setDropdownOpen(!dropdownOpen)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white font-mono text-lg flex-1">{vehicleType}</Text>
+          <Text className="text-white text-xl ml-2">▼</Text>
+        </TouchableOpacity>
+        {dropdownOpen && (
+          <View className="absolute top-14 left-0 w-full bg-black border-2 border-white rounded-xl z-10">
+            {VEHICLE_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => {
+                  setVehicleType(type);
+                  setDropdownOpen(false);
+                }}
+                className="px-4 py-2"
+              >
+                <Text className="text-white font-mono text-lg">{type}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
 
       {/* Vehicle No */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Vehicle No</Text>
