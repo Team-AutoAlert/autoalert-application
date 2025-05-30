@@ -14,13 +14,27 @@ const VEHICLE_TYPES = [
   "Other"
 ];
 
+const BRANDS = [
+  "Bajaj",
+  "BMW",
+  "Mazda",
+  "Nissan",
+  "Tata",
+  "Tesla",
+  "Toyota",
+  "Yamaha"
+];
+
 export default function VehicleInfo() {
   const router = useRouter();
   const [vehicleType, setVehicleType] = useState("Car");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [vehicleTypeDropdown, setVehicleTypeDropdown] = useState(false);
+
+  const [make, setMake] = useState("Bajaj");
+  const [makeDropdown, setMakeDropdown] = useState(false);
+
   const [vehicleNo, setVehicleNo] = useState("");
   const [model, setModel] = useState("");
-  const [make, setMake] = useState("");
   const [fuelType, setFuelType] = useState("");
 
   return (
@@ -35,20 +49,20 @@ export default function VehicleInfo() {
       <View className="w-full mb-3">
         <TouchableOpacity
           className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
-          onPress={() => setDropdownOpen(!dropdownOpen)}
+          onPress={() => setVehicleTypeDropdown(!vehicleTypeDropdown)}
           activeOpacity={0.8}
         >
           <Text className="text-white font-mono text-lg flex-1">{vehicleType}</Text>
           <Text className="text-white text-xl ml-2">▼</Text>
         </TouchableOpacity>
-        {dropdownOpen && (
+        {vehicleTypeDropdown && (
           <View className="absolute top-14 left-0 w-full bg-black border-2 border-white rounded-xl z-10">
             {VEHICLE_TYPES.map((type) => (
               <TouchableOpacity
                 key={type}
                 onPress={() => {
                   setVehicleType(type);
-                  setDropdownOpen(false);
+                  setVehicleTypeDropdown(false);
                 }}
                 className="px-4 py-2"
               >
@@ -79,15 +93,34 @@ export default function VehicleInfo() {
         placeholderTextColor="#aaa"
       />
 
-      {/* Make */}
+      {/* Make Dropdown */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Make</Text>
-      <TextInput
-        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
-        value={make}
-        onChangeText={setMake}
-        placeholder=""
-        placeholderTextColor="#aaa"
-      />
+      <View className="w-full mb-3">
+        <TouchableOpacity
+          className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
+          onPress={() => setMakeDropdown(!makeDropdown)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white font-mono text-lg flex-1">{make}</Text>
+          <Text className="text-white text-xl ml-2">▼</Text>
+        </TouchableOpacity>
+        {makeDropdown && (
+          <View className="absolute top-14 left-0 w-full bg-black border-2 border-white rounded-xl z-10">
+            {BRANDS.map((brand) => (
+              <TouchableOpacity
+                key={brand}
+                onPress={() => {
+                  setMake(brand);
+                  setMakeDropdown(false);
+                }}
+                className="px-4 py-2"
+              >
+                <Text className="text-white font-mono text-lg">{brand}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
 
       {/* Fuel Type */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Fuel Type</Text>
