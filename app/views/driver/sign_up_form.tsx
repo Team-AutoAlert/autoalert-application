@@ -12,48 +12,73 @@ export default function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
-    <View className="flex-1 justify-center items-center bg-white px-6">
-      <Text className="text-2xl font-bold text-blue-600 mb-4">Sign Up</Text>
+    <View className="flex-1 justify-center items-center bg-black px-6">
+      {/* Header */}
+      <Text className="text-4xl text-red-500 font-mono font-bold text-center mb-8">
+        Sign Up
+      </Text>
 
+      {/* First Name */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">First Name</Text>
       <TextInput
-        placeholder="First Name"
-        className="border w-full mb-3 px-4 py-2 rounded"
+        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
         value={firstName}
         onChangeText={setFirstName}
-      />
-      <TextInput
-        placeholder="Last Name"
-        className="border w-full mb-3 px-4 py-2 rounded"
-        value={lastName}
-        onChangeText={setLastName}
-      />
-      <TextInput
-        placeholder="Email"
-        keyboardType="email-address"
-        className="border w-full mb-3 px-4 py-2 rounded"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        placeholder="Password"
-        secureTextEntry
-        className="border w-full mb-3 px-4 py-2 rounded"
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        placeholder="Confirm Password"
-        secureTextEntry
-        className="border w-full mb-5 px-4 py-2 rounded"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
+        placeholder=""
+        placeholderTextColor="#aaa"
       />
 
+      {/* Last Name */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Last Name</Text>
+      <TextInput
+        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
+        value={lastName}
+        onChangeText={setLastName}
+        placeholder=""
+        placeholderTextColor="#aaa"
+      />
+
+      {/* Email */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Email</Text>
+      <TextInput
+        keyboardType="email-address"
+        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
+        value={email}
+        onChangeText={setEmail}
+        placeholder=""
+        placeholderTextColor="#aaa"
+      />
+
+      {/* Password */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Password</Text>
+      <TextInput
+        secureTextEntry
+        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
+        value={password}
+        onChangeText={setPassword}
+        placeholder=""
+        placeholderTextColor="#aaa"
+      />
+
+      {/* Confirm Password */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Confirm Password</Text>
+      <TextInput
+        secureTextEntry
+        className="border-2 border-white rounded-xl w-full mb-8 px-4 py-2 text-white bg-transparent font-mono text-lg"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        placeholder=""
+        placeholderTextColor="#aaa"
+      />
+
+      {/* Next Button */}
       <TouchableOpacity
         onPress={() => router.push("/views/mechanic/sign_up_step2")}
-        className="bg-blue-600 px-6 py-3 rounded-lg w-full"
+        className="bg-blue-300 w-full py-4 rounded-xl"
       >
-        <Text className="text-white text-center font-medium text-base">Next</Text>
+        <Text className="text-white text-center text-2xl font-mono font-medium">
+          Next
+        </Text>
       </TouchableOpacity>
     </View>
   );
