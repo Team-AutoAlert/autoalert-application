@@ -20,7 +20,7 @@ export default function VehicleInfo() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [vehicleNo, setVehicleNo] = useState("");
   const [model, setModel] = useState("");
-  const [brand, setBrand] = useState("");
+  const [make, setMake] = useState("");
   const [fuelType, setFuelType] = useState("");
 
   return (
@@ -79,12 +79,12 @@ export default function VehicleInfo() {
         placeholderTextColor="#aaa"
       />
 
-      {/* Brand */}
-      <Text className="text-white text-xl font-mono mb-1 w-full">Brand</Text>
+      {/* Make */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Make</Text>
       <TextInput
         className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
-        value={brand}
-        onChangeText={setBrand}
+        value={make}
+        onChangeText={setMake}
         placeholder=""
         placeholderTextColor="#aaa"
       />
