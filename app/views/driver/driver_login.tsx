@@ -1,63 +1,68 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
-import { useRouter } from "expo-router";
-import { Link } from "expo-router";
 
 export default function DriverLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
 
   const handleLogin = () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in both fields.");
       return;
     }
-
     // Example login logic (replace with real API call)
     if (email === "mechanic@example.com" && password === "password123") {
       Alert.alert("Success", "Logged in successfully!");
-      setTimeout(() => {
-        router.replace("/views/driver/driver_home"); // ✅ Redirect to Mechanic Home
-      }, 500);
+      // Redirect logic here
     } else {
       Alert.alert("Error", "Invalid credentials.");
     }
   };
 
   return (
-    <View className="flex-1 justify-center items-center bg-white px-6">
-      <Text className="text-3xl font-bold mb-6 text-blue-600">Driver Login</Text>
+    <View className="flex-1 bg-black px-6 pt-8">
+      
+      {/* Header */}
+      <Text className="text-5xl text-red-500 font-mono font-bold text-center mb-8">
+        Sign In
+      </Text>
 
+      {/* Username/Email Label */}
+      <Text className="text-white text-2xl font-mono mb-2 text-center">
+        Username/Email
+      </Text>
       <TextInput
-        placeholder="Email"
+        placeholder=""
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
-        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base"
+        className="w-full border-2 border-white rounded-xl px-4 py-3 mb-6 text-white bg-transparent text-lg"
+        placeholderTextColor="#aaa"
       />
 
+      {/* Password Label */}
+      <Text className="text-white text-2xl font-mono mb-2 text-center">
+        Password
+      </Text>
       <TextInput
-        placeholder="Password"
+        placeholder=""
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-6 text-base"
+        className="w-full border-2 border-white rounded-xl px-4 py-3 mb-8 text-white bg-transparent text-lg"
+        placeholderTextColor="#aaa"
       />
 
+      {/* Sign In Button */}
       <TouchableOpacity
         onPress={handleLogin}
-        className="w-full bg-blue-600 py-3 rounded-lg"
+        className="w-full bg-blue-300 py-4 rounded-xl"
       >
-        <Text className="text-center text-white text-base font-medium">Login</Text>
+        <Text className="text-center text-white text-2xl font-mono font-medium">
+          Sign In
+        </Text>
       </TouchableOpacity>
-
-      <Link href="/views/driver/index" asChild>
-        <TouchableOpacity className="mt-4">
-          <Text className="text-blue-500">← Back to Main Home</Text>
-        </TouchableOpacity>
-      </Link>
     </View>
   );
 }
