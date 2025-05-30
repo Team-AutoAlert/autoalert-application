@@ -76,7 +76,7 @@ export default function ContactInfo() {
 
       {/* Next Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/mechanic/verify_phone")}
+        onPress={() => router.push("/views/driver/mobile_verify")}
         className="bg-blue-300 w-full py-4 rounded-xl"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
