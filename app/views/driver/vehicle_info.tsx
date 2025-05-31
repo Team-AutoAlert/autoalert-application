@@ -73,15 +73,6 @@ export default function VehicleInfo() {
         placeholderTextColor="#aaa"
       />
 
-      {/* Model */}
-      <Text className="text-white text-xl font-mono mb-1 w-full">Model</Text>
-      <TextInput
-        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
-        value={model}
-        onChangeText={setModel}
-        placeholder=""
-        placeholderTextColor="#aaa"
-      />
 
       {/* Make Dropdown */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Make</Text>
@@ -111,6 +102,17 @@ export default function VehicleInfo() {
           </ScrollView>
         )}
       </View>
+
+      
+      {/* Model */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Model</Text>
+      <TextInput
+        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
+        value={model}
+        onChangeText={setModel}
+        placeholder=""
+        placeholderTextColor="#aaa"
+      />
 
       {/* Fuel Type */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Fuel Type</Text>
