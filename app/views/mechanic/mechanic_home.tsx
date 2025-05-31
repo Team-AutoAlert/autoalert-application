@@ -11,9 +11,9 @@ export default function MechanicHome() {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <View className="flex-1 bg-gray-800 relative px-4 pt-10">
+    <View className="flex-1 bg-gray-800 relative px-4 pt-8">
       {/* Header */}
-      <View className="flex-row justify-between items-center mb-4">
+      <View className="flex-row justify-between items-center mb-8">
         <TouchableOpacity onPress={toggleMenu}>
           <Ionicons name="menu" size={28} color="#fff" />
         </TouchableOpacity>
@@ -24,35 +24,37 @@ export default function MechanicHome() {
       </View>
 
       {/* Mechanic Info Card */}
-      <View className="bg-gray-700 p-4 rounded-lg flex-row items-center mb-4">
-        <Image
-          source={require("../../../assets/images/mechanic.png")}// Replace with your image path
-          className="w-16 h-16 rounded-full mr-4"
-        />
+      <View className="bg-gray-700 pt-0 pl-8 rounded-lg flex-row justify-between items-center mb-4">
+        
         <View>
-          <Text className="text-white text-lg font-bold">Hi Saman</Text>
-          <Text className="text-yellow-400">★★★★★</Text>
-          <Text className="text-gray-300">0762345656</Text>
-          <Text className="text-gray-300">Kalutara</Text>
+          <Text className="text-white text-xl font-bold">Hi Saman</Text>
+          <Text className="text-yellow-400 text-lg">★★★★★</Text>
+          <Text className="text-gray-300 text-base">0762345656</Text>
+          <Text className="text-gray-300 text-base">Kalutara</Text>
         </View>
+
+        <Image
+            source={require("../../../assets/images/mechanic.png")}
+            className="w-[250px] h-[200px] rounded-full mr-0 ml-1"
+          />
       </View>
 
       {/* Availability & Jobs */}
-      <View className="mb-4">
-        <Text className="text-white">Availability:</Text>
-        <Text className="text-red-500 font-bold bg-white px-3 py-1 rounded-full w-20 text-center mt-1">Busy</Text>
+      <View className="mb-4 flex-row justify-between items-center">
+        <Text className="text-white text-xl ml-10 font-bold">Availability:</Text>
+        <Text className="text-red-500 font-bold bg-white px-3 py-1 rounded-full w-20 text-center mt-1 mr-10">Busy</Text>
       </View>
-      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-4 font-semibold">
+      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-6 mt-6 ml-20 font-semibold">
         ● Jobs Ongoing
       </Text>
 
       {/* Quick Action Buttons */}
       <View className="flex-row justify-between px-10 mb-4">
         <TouchableOpacity className="bg-gray-600 p-4 rounded-full">
-          <FontAwesome name="microphone" size={28} color="white" />
+          <FontAwesome name="microphone" size={78} color="white" />
         </TouchableOpacity>
         <TouchableOpacity className="bg-green-600 p-4 rounded-full">
-          <FontAwesome name="video-camera" size={28} color="white" />
+          <FontAwesome name="video-camera" size={78} color="white" />
         </TouchableOpacity>
       </View>
 
