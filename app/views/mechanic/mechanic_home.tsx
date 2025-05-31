@@ -3,9 +3,11 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
 
 export default function MechanicHome() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [availability, setAvailability] = useState("Busy");
   const router = useRouter();
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -25,7 +27,6 @@ export default function MechanicHome() {
 
       {/* Mechanic Info Card */}
       <View className="bg-gray-700 pt-0 pl-8 rounded-lg flex-row justify-between items-center mb-4">
-        
         <View>
           <Text className="text-white text-xl font-bold">Hi Saman</Text>
           <Text className="text-yellow-400 text-lg">★★★★★</Text>
@@ -34,17 +35,40 @@ export default function MechanicHome() {
         </View>
 
         <Image
-            source={require("../../../assets/images/mechanic.png")}
-            className="w-[240px] h-[200px] rounded-full mr-0 ml-1"
-          />
+          source={require("../../../assets/images/mechanic.png")}
+          className="w-[250px] h-[200px] rounded-full mr-0 ml-1"
+        />
       </View>
 
-      {/* Availability & Jobs */}
+      {/* Availability Dropdown */}
       <View className="mb-4 flex-row justify-between items-center">
         <Text className="text-white text-xl ml-10 font-bold">Availability:</Text>
-        <Text className="text-red-500 font-bold bg-white px-3 py-1 rounded-full w-20 text-center mt-1 mr-10">Busy</Text>
+        <View className="bg-white rounded-full px-1 py-0 w-36 mt-1 mr-4">
+          <Picker
+            selectedValue={availability}
+            onValueChange={(itemValue) => setAvailability(itemValue)}
+            style={{
+              height: 55,
+              width:150,
+              color:
+                availability === "Busy"
+                  ? "#dc2626"
+                  : availability === "Available"
+                  ? "#16a34a"
+                  : "#d97706",
+              fontWeight: "bold",
+            }}
+            dropdownIconColor="black"
+          >
+            <Picker.Item label="Busy" value="Busy" />
+            <Picker.Item label="Available" value="Available" />
+            <Picker.Item label="On Break" value="On Break" />
+          </Picker>
+        </View>
       </View>
-      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-6 mt-6 ml-20 font-semibold">
+
+      {/* Jobs Ongoing */}
+      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-6 mt-2 ml-20 font-semibold">
         ● Jobs Ongoing
       </Text>
 
@@ -100,7 +124,6 @@ export default function MechanicHome() {
           </TouchableOpacity>
         </View>
       )}
-      
     </View>
   );
 }
