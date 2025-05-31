@@ -9,6 +9,18 @@ const _layout = () => {
             title: 'Home',
             headerShown: false,
         }} />
+        <Tabs.Screen name="account" options={{
+            title: 'Account',
+            headerShown: false,
+        }} />
+        <Tabs.Screen name="settings" options={{
+            title: 'Settings',
+            headerShown: false,
+        }} />
+        <Tabs.Screen name="tutorial" options={{
+            title: 'Tutorial',
+            headerShown: false,
+        }} />
     </Tabs>
   )
 }
