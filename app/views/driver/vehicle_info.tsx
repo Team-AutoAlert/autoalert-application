@@ -122,7 +122,7 @@ export default function VehicleInfo() {
         placeholder=""
         placeholderTextColor="#aaa"
       />
-      
+
       {/* Fuel Type */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Fuel Type</Text>
       <View className="w-full mb-8">
@@ -154,7 +154,7 @@ export default function VehicleInfo() {
 
       {/* Sign Up Button */}
       <TouchableOpacity
-        onPress={() => {/* handle sign up or navigation here */}}
+        onPress={() => router.push("/views/driver/(tabs)/home")}
         className="bg-blue-300 w-full py-4 rounded-xl"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
