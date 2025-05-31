@@ -35,7 +35,7 @@ export default function MechanicHome() {
 
         <Image
             source={require("../../../assets/images/mechanic.png")}
-            className="w-[250px] h-[200px] rounded-full mr-0 ml-1"
+            className="w-[240px] h-[200px] rounded-full mr-0 ml-1"
           />
       </View>
 
