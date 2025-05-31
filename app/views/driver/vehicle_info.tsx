@@ -15,6 +15,14 @@ const VEHICLE_TYPES = [
   "Other"
 ];
 
+const FUEL_TYPES = [
+  "Petrol",
+  "Diesel",
+  "Electric",
+  "Hybrid",
+  "Gas"
+];
+
 export default function VehicleInfo() {
   const router = useRouter();
   const [vehicleType, setVehicleType] = useState("Car");
@@ -25,7 +33,8 @@ export default function VehicleInfo() {
 
   const [vehicleNo, setVehicleNo] = useState("");
   const [model, setModel] = useState("");
-  const [fuelType, setFuelType] = useState("");
+  const [fuelType, setFuelType] = useState("Petrol");
+  const [fuelTypeDropdown, setFuelTypeDropdown] = useState(false);
 
   return (
     <View className="flex-1 justify-center items-center bg-black px-6">
@@ -113,16 +122,35 @@ export default function VehicleInfo() {
         placeholder=""
         placeholderTextColor="#aaa"
       />
-
+      
       {/* Fuel Type */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Fuel Type</Text>
-      <TextInput
-        className="border-2 border-white rounded-xl w-full mb-8 px-4 py-2 text-white bg-transparent font-mono text-lg"
-        value={fuelType}
-        onChangeText={setFuelType}
-        placeholder=""
-        placeholderTextColor="#aaa"
-      />
+      <View className="w-full mb-8">
+        <TouchableOpacity
+          className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
+          onPress={() => setFuelTypeDropdown(!fuelTypeDropdown)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white font-mono text-lg flex-1">{fuelType}</Text>
+          <Text className="text-white text-xl ml-2">▼</Text>
+        </TouchableOpacity>
+        {fuelTypeDropdown && (
+          <View className="absolute top-14 left-0 w-full bg-black border-2 border-white rounded-xl z-10">
+            {FUEL_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => {
+                  setFuelType(type);
+                  setFuelTypeDropdown(false);
+                }}
+                className="px-4 py-2"
+              >
+                <Text className="text-white font-mono text-lg">{type}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </View>
 
       {/* Sign Up Button */}
       <TouchableOpacity
