@@ -1,6 +1,6 @@
 // app/views/mechanic/sign_up_step2.tsx
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "expo-router";
 
 const LANGUAGES = ["English", "Sinhala", "Tamil"];
@@ -11,6 +11,17 @@ export default function ContactInfo() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [language, setLanguage] = useState("English");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const inputs = [
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null)
+  ];
+
+  if (inputs[3].current) {
+    inputs[3].current.focus();
+  }
 
   return (
     <View className="flex-1 justify-center items-center bg-black px-6">
