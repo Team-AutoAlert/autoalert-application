@@ -89,12 +89,13 @@ export default function EmailVerify() {
         {[["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", "⌫"]].map((row, rIdx) => (
           <View key={rIdx} className="flex-row justify-between mb-3">
             {row.map((num, cIdx) => {
+              const key = `${rIdx}-${cIdx}`;
               if (num === "") {
-                return <View key={cIdx} className="w-14 h-14" />;
+                return <View key={key} className="w-14 h-14" />;
               } else if (num === "⌫") {
                 return (
                   <TouchableOpacity
-                    key={num}
+                    key={key}
                     onPress={handleBackspace}
                     className="w-14 h-14 bg-gray-200 rounded-xl justify-center items-center"
                   >
@@ -104,7 +105,7 @@ export default function EmailVerify() {
               } else {
                 return (
                   <TouchableOpacity
-                    key={num}
+                    key={key}
                     onPress={() => handleKeyPress(num)}
                     className="w-14 h-14 bg-white rounded-xl justify-center items-center"
                   >
