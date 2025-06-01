@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const Settings = () => {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       {/* Title */}
@@ -12,7 +15,7 @@ const Settings = () => {
         style={styles.mechanicIcon}
       />
       {/* Buttons */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/payment_method')}>
         <Text style={styles.buttonText}>Payment Method</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button}>
