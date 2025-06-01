@@ -225,9 +225,10 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   cardNumber: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#222',
     fontFamily: 'monospace',
+    flexShrink: 1,
   },
   addNewTitle: {
     color: '#e53935',
