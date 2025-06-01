@@ -58,7 +58,6 @@ const PaymentMethod = () => {
     <ScrollView style={{ flex: 1, backgroundColor: '#222' }} contentContainerStyle={styles.container}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.backArrow}>↩</Text>
         <Text style={styles.title}>Payment Method</Text>
       </View>
 
