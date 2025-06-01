@@ -41,7 +41,7 @@ export default function MechanicHome() {
       </View>
 
       {/* Availability Dropdown */}
-      <View className="mb-4 flex-row justify-between items-center">
+      <View className="mb-3 flex-row justify-between items-center">
         <Text className="text-white text-xl ml-10 font-bold">Availability:</Text>
         <View className="bg-white rounded-full px-1 py-0 w-36 mt-1 mr-4">
           <Picker
@@ -68,35 +68,65 @@ export default function MechanicHome() {
       </View>
 
       {/* Jobs Ongoing */}
-      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-6 mt-2 ml-20 font-semibold">
+      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-4 mt-2 ml-20 font-semibold">
         ● Jobs Ongoing
       </Text>
 
       {/* Quick Action Buttons */}
       <View className="flex-row justify-between px-10 mb-4">
         <TouchableOpacity className="bg-gray-600 p-4 rounded-full">
-          <FontAwesome name="microphone" size={78} color="white" />
+          <FontAwesome name="microphone" size={68} color="white" />
         </TouchableOpacity>
         <TouchableOpacity className="bg-green-600 p-4 rounded-full">
-          <FontAwesome name="video-camera" size={78} color="white" />
+          <FontAwesome name="video-camera" size={68} color="white" />
         </TouchableOpacity>
       </View>
 
       {/* Bottom Navigation */}
-      <View className="absolute bottom-4 left-0 right-0 px-4 flex-row justify-between">
-        <TouchableOpacity>
-          <Ionicons name="home" size={26} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <MaterialIcons name="assignment" size={26} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="alert-circle" size={26} color="red" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="notifications" size={26} color="white" />
-        </TouchableOpacity>
+      <View className="absolute bottom-0 left-0 right-0 bg-gray-900 py-3 px-6 flex-row justify-between items-center rounded-t-2xl shadow-lg">
+        {/* Home */}
+        <View className="flex-1 items-center">
+          <TouchableOpacity>
+            <Ionicons name="home" size={26} color="#facc15" />
+          </TouchableOpacity>
+          <Text className="text-white text-xs text-center mt-1">
+            MECH{'\n'}Home
+          </Text>
+        </View>
+
+        {/* Account Activity */}
+        <View className="flex-1 items-center">
+          <TouchableOpacity>
+            <MaterialIcons name="assignment" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text className="text-white text-xs text-center mt-1">
+            Account{'\n'}Activity
+          </Text>
+        </View>
+
+        {/* SOS Alerts */}
+        <View className="flex-1 items-center">
+          <TouchableOpacity>
+            <Ionicons name="alert-circle" size={26} color="#f87171" />
+          </TouchableOpacity>
+          <Text className="text-red-400 text-xs text-center mt-1">
+            SOS{'\n'}Alerts
+          </Text>
+        </View>
+
+        {/* Job Notifications */}
+        <View className="flex-1 items-center">
+          <TouchableOpacity>
+            <Ionicons name="notifications" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text className="text-white text-xs text-center mt-1">
+            Job{'\n'}Notifications
+          </Text>
+        </View>
       </View>
+
+
+
 
       {/* Slide Menu with tap-to-close backdrop */}
       {menuOpen && (
