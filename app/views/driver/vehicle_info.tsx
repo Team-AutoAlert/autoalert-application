@@ -77,15 +77,7 @@ export default function VehicleInfo() {
         )}
       </View>
 
-      {/* Vehicle No */}
-      <Text className="text-white text-xl font-mono mb-1 w-full">Vehicle No</Text>
-      <TextInput
-        className="border-2 border-white rounded-xl w-full mb-3 px-4 py-2 text-white bg-transparent font-mono text-lg"
-        value={vehicleNo}
-        onChangeText={setVehicleNo}
-        placeholder=""
-        placeholderTextColor="#aaa"
-      />
+      
 
       {/* Make Dropdown */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Make</Text>
@@ -157,7 +149,7 @@ export default function VehicleInfo() {
 
       {/* Fuel Type */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Fuel Type</Text>
-      <View className="w-full mb-8">
+      <View className="w-full mb-3">
         <TouchableOpacity
           className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
           onPress={() => setFuelTypeDropdown(!fuelTypeDropdown)}
@@ -183,6 +175,16 @@ export default function VehicleInfo() {
           </View>
         )}
       </View>
+      
+      {/* Vehicle No */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Vehicle No</Text>
+      <TextInput
+        className="border-2 border-white rounded-xl w-full mb-8 px-4 py-2 text-white bg-transparent font-mono text-lg"
+        value={vehicleNo}
+        onChangeText={setVehicleNo}
+        placeholder=""
+        placeholderTextColor="#aaa"
+      />
 
       {/* Sign Up Button */}
       <TouchableOpacity
