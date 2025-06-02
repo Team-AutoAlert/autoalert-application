@@ -15,7 +15,7 @@ const Settings = () => {
         style={styles.mechanicIcon}
       />
       {/* Buttons */}
-      <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/payment_method')}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/settings/payment_method')}>
         <Text style={styles.buttonText}>Payment Method</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button}>
