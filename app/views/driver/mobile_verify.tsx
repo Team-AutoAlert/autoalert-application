@@ -24,7 +24,7 @@ export default function MobileVerify() {
       newCode[nextIndex] = value;
       setCode(newCode);
       if (nextIndex < 5 && inputs[nextIndex + 1].current != null) {
-        inputs[nextIndex + 1].current.focus();
+        inputs[nextIndex + 1].current?.focus();
       }
     }
   };
