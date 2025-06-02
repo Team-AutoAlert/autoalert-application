@@ -18,7 +18,7 @@ const Settings = () => {
       <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/settings/payment_method')}>
         <Text style={styles.buttonText}>Payment Method</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/settings/vehicle_details')}>
         <Text style={styles.buttonText}>Vehicle Details</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button}onPress={() => router.push('../../driver/settings/user_profile')}>
