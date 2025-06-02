@@ -103,6 +103,27 @@ export default function AccountActivity() {
         <Text className="text-white font-bold">Amount</Text>
       </View>
 
+      {/* Transaction List */}
+      <FlatList
+        data={filtered}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => openModal(item)}>
+            <View className="flex-row justify-between px-2 py-3 border-b border-gray-700">
+              <View>
+                <Text className="text-white">{item.date}</Text>
+                <Text className="text-xs text-gray-300">{item.time}</Text>
+              </View>
+              <Text className="text-white">{item.number}</Text>
+              <View>
+                <Text className="text-red-400">{item.amount}</Text>
+                <Text className="text-xs text-gray-300 text-right">{item.type}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
+
       
     </View>
   );
