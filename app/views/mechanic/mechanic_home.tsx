@@ -86,7 +86,7 @@ export default function MechanicHome() {
       <View className="absolute bottom-0 left-0 right-0 bg-gray-900 py-3 px-6 flex-row justify-between items-center rounded-t-2xl shadow-lg">
         {/* Home */}
         <View className="flex-1 items-center">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/mechanic_home")}>
             <Ionicons name="home" size={26} color="#facc15" />
           </TouchableOpacity>
           <Text className="text-white text-xs text-center mt-1">
@@ -96,7 +96,7 @@ export default function MechanicHome() {
 
         {/* Account Activity */}
         <View className="flex-1 items-center">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/account_activity")}>
             <MaterialIcons name="assignment" size={26} color="#fff" />
           </TouchableOpacity>
           <Text className="text-white text-xs text-center mt-1">
@@ -106,7 +106,7 @@ export default function MechanicHome() {
 
         {/* SOS Alerts */}
         <View className="flex-1 items-center">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/sos_alerts")}>
             <Ionicons name="alert-circle" size={26} color="#f87171" />
           </TouchableOpacity>
           <Text className="text-red-400 text-xs text-center mt-1">
@@ -116,13 +116,14 @@ export default function MechanicHome() {
 
         {/* Job Notifications */}
         <View className="flex-1 items-center">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/job_notifications")}>
             <Ionicons name="notifications" size={26} color="#fff" />
           </TouchableOpacity>
           <Text className="text-white text-xs text-center mt-1">
             Job{'\n'}Notifications
           </Text>
         </View>
+
       </View>
 
 
