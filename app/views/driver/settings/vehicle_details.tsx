@@ -1,11 +1,10 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { VEHICLE_BRANDS } from "../../../constants/vehicle_brands"; // Adjust path as needed
+import { VEHICLE_BRANDS } from "../../../constants/vehicle_brands"; 
 
 const initialVehicles = [
-  { id: '1', name: 'Honda Grace', type: 'Car', no: 'ABC-1234', model: 'Grace', brand: 'Honda', fuel: 'Petrol', year: '2020' },
-  { id: '2', name: 'Toyota Prius', type: 'Car', no: 'XYZ-5678', model: 'Prius', brand: 'Toyota', fuel: 'Hybrid', year: '2022' },
+  { id: '1', name: 'Honda Grace', type: 'Car', no: 'ABC-1234', model: 'Grace', Make: 'Honda', fuel: 'Petrol', year: '2020' },
 ];
 
 const VEHICLE_TYPES = [
@@ -42,8 +41,8 @@ export default function VehicleDetails() {
   const [vehicleTypeDropdown, setVehicleTypeDropdown] = useState(false);
   const [vehicleNo, setVehicleNo] = useState("");
   const [model, setModel] = useState("");
-  const [brand, setBrand] = useState("");
-  const [brandDropdown, setBrandDropdown] = useState(false);
+  const [Make, setMake] = useState("");
+  const [MakeDropdown, setMakeDropdown] = useState(false);
   const [fuelType, setFuelType] = useState("");
   const [fuelTypeDropdown, setFuelTypeDropdown] = useState(false);
   const [year, setYear] = useState("");
@@ -56,14 +55,23 @@ export default function VehicleDetails() {
   };
 
   const handleAddVehicle = () => {
-    if (!vehicleType || !vehicleNo || !model || !brand || !fuelType || !year) return;
+    if (!vehicleType || !vehicleNo || !model || !Make || !fuelType || !year) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+    if (vehicles.length >= 3) {
+      alert('Maximum limit of 3 vehicles reached');
+      return;
+    }
+    
     const newVehicle = {
       id: Date.now().toString(),
-      name: `${brand} ${model}`,
+      name: `${Make} ${model}`,
       type: vehicleType,
       no: vehicleNo,
       model,
-      brand,
+      Make,
       fuel: fuelType,
       year,
     };
@@ -73,7 +81,7 @@ export default function VehicleDetails() {
     setVehicleType("");
     setVehicleNo("");
     setModel("");
-    setBrand("");
+    setMake("");
     setFuelType("");
     setYear("");
   };
@@ -85,21 +93,31 @@ export default function VehicleDetails() {
       <View style={styles.contentContainer}>
         {/* Vehicle Selector */}
         <View style={styles.selectorRow}>
-          <TouchableOpacity style={styles.selectorBtn}>
-            <Text style={styles.selectorBtnText}>Vehicle</Text>
-          </TouchableOpacity>
-          <View style={styles.selectedVehicleBox}>
-            <Text style={styles.selectedVehicleText}>{selectedVehicle ? selectedVehicle.name : 'Select Vehicle'}</Text>
-            <View style={styles.statusDot} />
+          <View style={styles.dropdownWrap}>
+            <TouchableOpacity style={styles.input} onPress={() => setDropdownOpen(!dropdownOpen)}>
+              <Text style={styles.inputText}>{selectedVehicle ? selectedVehicle.name : 'Select Vehicle'}</Text>
+            </TouchableOpacity>
+            {dropdownOpen && (
+              <ScrollView style={styles.dropdownList}>
+                {vehicles.map((vehicle) => (
+                  <TouchableOpacity key={vehicle.id} onPress={() => handleSelectVehicle(vehicle)}>
+                    <Text style={styles.dropdownItem}>{vehicle.name}</Text>
+                  </TouchableOpacity>
+                ))}
+                {vehicles.length < 3 && (
+                  <TouchableOpacity onPress={() => { setAddingNew(true); setDropdownOpen(false); }}>
+                    <Text style={[styles.dropdownItem, { color: '#e53935' }]}>+ Add New Vehicle</Text>
+                  </TouchableOpacity>
+                )}
+              </ScrollView>
+            )}
           </View>
-          <TouchableOpacity onPress={() => setAddingNew(true)}>
-            <Text style={styles.editText}>Edit</Text>
-          </TouchableOpacity>
         </View>
         {/* Add New Vehicle Form */}
         {addingNew && (
           <View style={styles.formBox}>
             <Text style={styles.formTitle}>Add New Vehicle</Text>
+            {/* <Text style={styles.vehicleCount}>: {vehicles.length}/3</Text> */}
             {/* Vehicle Type Dropdown */}
             <Text style={styles.label}>Vehicle Type</Text>
             <View style={styles.dropdownWrap}>
@@ -122,16 +140,16 @@ export default function VehicleDetails() {
             {/* Model */}
             <Text style={styles.label}>Model</Text>
             <TextInput style={styles.input} value={model} onChangeText={setModel} placeholder="" placeholderTextColor="#222" />
-            {/* Brand Dropdown */}
-            <Text style={styles.label}>Brand</Text>
+            {/* Make Dropdown */}
+            <Text style={styles.label}>Make</Text>
             <View style={styles.dropdownWrap}>
-              <TouchableOpacity style={styles.input} onPress={() => setBrandDropdown(!brandDropdown)}>
-                <Text style={styles.inputText}>{brand || 'Select Brand'}</Text>
+              <TouchableOpacity style={styles.input} onPress={() => setMakeDropdown(!MakeDropdown)}>
+                <Text style={styles.inputText}>{Make || 'Select Make'}</Text>
               </TouchableOpacity>
-              {brandDropdown && (
+              {MakeDropdown && (
                 <ScrollView style={styles.dropdownList}>
                   {VEHICLE_BRANDS.map((b) => (
-                    <TouchableOpacity key={b} onPress={() => { setBrand(b); setBrandDropdown(false); }}>
+                    <TouchableOpacity key={b} onPress={() => { setMake(b); setMakeDropdown(false); }}>
                       <Text style={styles.dropdownItem}>{b}</Text>
                     </TouchableOpacity>
                   ))}
@@ -201,52 +219,44 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   selectorRow: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
+    width: '100%',
     marginBottom: 8,
   },
-  selectorBtn: {
-    backgroundColor: '#f8fafc',
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 18,
-    marginRight: 6,
+  dropdownWrap: {
+    marginBottom: 10,
   },
-  selectorBtnText: {
-    color: '#e53935',
-    fontFamily: 'monospace',
-    fontSize: 18,
-  },
-  selectedVehicleBox: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    marginRight: 6,
+  input: {
     backgroundColor: '#fff',
-  },
-  selectedVehicleText: {
-    color: '#222',
-    fontFamily: 'monospace',
-    fontSize: 18,
-    marginRight: 8,
-  },
-  statusDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: '#2ecc40',
-  },
-  editText: {
-    color: '#e53935',
+    borderWidth: 3,
+    borderColor: '#000',
+    borderRadius: 10,
     fontFamily: 'monospace',
     fontSize: 16,
-    marginLeft: 6,
+    color: '#222',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 3,
+  },
+  inputText: {
+    color: '#222',
+    fontFamily: 'monospace',
+    fontSize: 16,
+  },
+  dropdownList: {
+    maxHeight: 120,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#222',
+    borderRadius: 10,
+    marginTop: 2,
+    zIndex: 1000,
+    position: 'absolute',
+    width: '100%',
+  },
+  dropdownItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    color: '#222',
   },
   formBox: {
     borderWidth: 2,
@@ -270,42 +280,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 2,
   },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 3,
-    borderColor: '#000',
-    borderRadius: 10,
-    fontFamily: 'monospace',
-    fontSize: 16,
-    color: '#222',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    marginBottom: 3,
-  },
-  inputText: {
-    color: '#222',
-    fontFamily: 'monospace',
-    fontSize: 16,
-  },
-  dropdownWrap: {
-    marginBottom: 10,
-  },
-  dropdownList: {
-    maxHeight: 120,
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    borderColor: '#222',
-    borderRadius: 10,
-    marginTop: 2,
-    zIndex: 1000,
-    position: 'absolute',
-    width: '100%',
-  },
-  dropdownItem: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    color: '#222',
-  },
   addBtn: {
     backgroundColor: '#b3e5fc',
     borderRadius: 10,
@@ -321,5 +295,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'monospace',
     textAlign: 'center' as const,
+  },
+  vehicleCount: {
+    color: '#666',
+    fontFamily: 'monospace',
+    fontSize: 14,
+    marginBottom: 0,
+    textAlign: 'right',
   },
 });
