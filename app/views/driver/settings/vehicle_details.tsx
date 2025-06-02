@@ -82,7 +82,7 @@ export default function VehicleDetails() {
     <View style={styles.container}>
       {/* Header */}
       <Text style={styles.header}>Vehicle Details</Text>
-      <ScrollView style={{ width: '100%' }} contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
+      <View style={styles.contentContainer}>
         {/* Vehicle Selector */}
         <View style={styles.selectorRow}>
           <TouchableOpacity style={styles.selectorBtn}>
@@ -175,7 +175,7 @@ export default function VehicleDetails() {
             </TouchableOpacity>
           </View>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -185,35 +185,39 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8fafc',
     alignItems: 'center' as const,
-    paddingTop: 40,
+    paddingTop: 20,
     paddingHorizontal: 18,
   },
+  contentContainer: {
+    width: '100%',
+    alignItems: 'center' as const,
+  },
   header: {
-    fontSize: 38,
+    fontSize: 32,
     color: '#e53935',
     fontWeight: 'bold' as const,
     fontFamily: 'monospace',
     textAlign: 'center' as const,
-    marginBottom: 18,
+    marginBottom: 12,
   },
   selectorRow: {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   selectorBtn: {
     backgroundColor: '#f8fafc',
     borderWidth: 2,
     borderColor: '#fff',
     borderRadius: 6,
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: 18,
     marginRight: 6,
   },
   selectorBtnText: {
     color: '#e53935',
     fontFamily: 'monospace',
-    fontSize: 20,
+    fontSize: 18,
   },
   selectedVehicleBox: {
     flexDirection: 'row' as const,
@@ -221,7 +225,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#fff',
     borderRadius: 6,
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: 12,
     marginRight: 6,
     backgroundColor: '#fff',
@@ -229,7 +233,7 @@ const styles = StyleSheet.create({
   selectedVehicleText: {
     color: '#222',
     fontFamily: 'monospace',
-    fontSize: 20,
+    fontSize: 18,
     marginRight: 8,
   },
   statusDot: {
@@ -250,19 +254,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     width: 340,
-    marginTop: 10,
+    marginTop: 8,
     backgroundColor: '#fff',
   },
   formTitle: {
     color: '#1976d2',
     fontFamily: 'monospace',
-    fontSize: 22,
+    fontSize: 20,
     marginBottom: 8,
   },
   label: {
     color: '#222',
     fontFamily: 'monospace',
-    fontSize: 20,
+    fontSize: 16,
     marginTop: 10,
     marginBottom: 2,
   },
@@ -272,16 +276,16 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 10,
     fontFamily: 'monospace',
-    fontSize: 20,
+    fontSize: 16,
     color: '#222',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 3,
   },
   inputText: {
     color: '#222',
     fontFamily: 'monospace',
-    fontSize: 20,
+    fontSize: 16,
   },
   dropdownWrap: {
     marginBottom: 10,
@@ -293,25 +297,28 @@ const styles = StyleSheet.create({
     borderColor: '#222',
     borderRadius: 10,
     marginTop: 2,
+    zIndex: 1000,
+    position: 'absolute',
+    width: '100%',
   },
   dropdownItem: {
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 16,
     color: '#222',
   },
   addBtn: {
     backgroundColor: '#b3e5fc',
     borderRadius: 10,
-    paddingVertical: 14,
+    paddingVertical: 10,
     alignItems: 'center' as const,
-    marginTop: 18,
+    marginTop: 12,
     borderWidth: 2,
     borderColor: '#fff',
   },
   addBtnText: {
     color: '#222',
     fontWeight: 'bold' as const,
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: 'monospace',
     textAlign: 'center' as const,
   },
