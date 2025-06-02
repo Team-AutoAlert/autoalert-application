@@ -23,6 +23,8 @@ const FUEL_TYPES = [
   "Gas"
 ];
 
+const MANUFACTURE_YEARS = Array.from({ length: 2025 - 1980 + 1 }, (_, i) => (1980 + i).toString());
+
 export default function VehicleInfo() {
   const router = useRouter();
   const [vehicleType, setVehicleType] = useState("Car");
@@ -30,6 +32,9 @@ export default function VehicleInfo() {
 
   const [make, setMake] = useState("Acura");
   const [makeDropdown, setMakeDropdown] = useState(false);
+
+  const [year, setYear] = useState(MANUFACTURE_YEARS[MANUFACTURE_YEARS.length - 1]);
+  const [yearDropdown, setYearDropdown] = useState(false);
 
   const [vehicleNo, setVehicleNo] = useState("");
   const [model, setModel] = useState("");
@@ -82,7 +87,6 @@ export default function VehicleInfo() {
         placeholderTextColor="#aaa"
       />
 
-
       {/* Make Dropdown */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Make</Text>
       <View className="w-full mb-3">
@@ -112,7 +116,35 @@ export default function VehicleInfo() {
         )}
       </View>
 
-      
+      {/* Manufacture Year Dropdown */}
+      <Text className="text-white text-xl font-mono mb-1 w-full">Manufacture Year</Text>
+      <View className="w-full mb-3">
+        <TouchableOpacity
+          className="flex-row items-center border-2 border-white rounded-xl px-4 py-2 bg-transparent"
+          onPress={() => setYearDropdown(!yearDropdown)}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white font-mono text-lg flex-1">{year}</Text>
+          <Text className="text-white text-xl ml-2">▼</Text>
+        </TouchableOpacity>
+        {yearDropdown && (
+          <ScrollView className="absolute top-14 left-0 w-full max-h-60 bg-black border-2 border-white rounded-xl z-10">
+            {MANUFACTURE_YEARS.map((y) => (
+              <TouchableOpacity
+                key={y}
+                onPress={() => {
+                  setYear(y);
+                  setYearDropdown(false);
+                }}
+                className="px-4 py-2"
+              >
+                <Text className="text-white font-mono text-lg">{y}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
+      </View>
+
       {/* Model */}
       <Text className="text-white text-xl font-mono mb-1 w-full">Model</Text>
       <TextInput
