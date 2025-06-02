@@ -21,7 +21,7 @@ const Settings = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Vehicle Details</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button}onPress={() => router.push('../../driver/settings/user_profile')}>
         <Text style={styles.buttonText}>User Profile</Text>
       </TouchableOpacity>
       {/* Sign Out */}
