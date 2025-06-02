@@ -5,8 +5,15 @@ import { useRouter } from "expo-router";
 
 export default function MobileVerify() {
   const router = useRouter();
-  const [code, setCode] = useState(["", "", "", ""]);
-  const inputs = [useRef(), useRef(), useRef(), useRef()];
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const inputs = [
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null)
+  ];
   const mobile = "077xxxx467";
 
   // Handle code input via keypad
@@ -16,7 +23,7 @@ export default function MobileVerify() {
       const newCode = [...code];
       newCode[nextIndex] = value;
       setCode(newCode);
-      if (nextIndex < 3) {
+      if (nextIndex < 5 && inputs[nextIndex + 1].current != null) {
         inputs[nextIndex + 1].current.focus();
       }
     }
@@ -29,12 +36,14 @@ export default function MobileVerify() {
       const newCode = [...code];
       newCode[lastIndex] = "";
       setCode(newCode);
-      inputs[lastIndex].current.focus();
+      if (inputs[lastIndex].current != null) {
+        inputs[lastIndex].current.focus();
+      }
     }
   };
 
   // Clear code
-  const handleClear = () => setCode(["", "", "", ""]);
+  const handleClear = () => setCode(["", "", "", "", "", ""]);
 
   return (
     <KeyboardAvoidingView
@@ -59,7 +68,7 @@ export default function MobileVerify() {
             value={digit}
             maxLength={1}
             keyboardType="number-pad"
-            className="w-12 h-12 border-2 border-blue-500 rounded-lg mx-2 text-center text-2xl text-white font-mono bg-transparent"
+            className="w-12 h-12 border-2 border-blue-500 rounded-lg mx-1 text-center text-2xl text-white font-mono bg-transparent"
             editable={false}
             placeholder=""
             placeholderTextColor="#aaa"
@@ -86,9 +95,9 @@ export default function MobileVerify() {
       </TouchableOpacity>
       {/* Keypad */}
       <View className="w-56">
-        {[["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", "⌫"]].map((row, rIdx) => (
+        {[ ["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"], ["", "0", "⌫"] ].map((row, rIdx) => (
           <View key={rIdx} className="flex-row justify-between mb-3">
-            {row.map((num, cIdx) => {
+            {row.map((num: string, cIdx: number) => {
               const key = `${rIdx}-${cIdx}`;
               if (num === "") {
                 return <View key={key} className="w-14 h-14" />;
