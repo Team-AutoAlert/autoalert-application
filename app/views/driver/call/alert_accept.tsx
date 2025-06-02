@@ -41,7 +41,7 @@ export default function AlertAcceptScreen() {
       <View style={styles.callButtonsContainer}>
         {/* Voice Call Button */}
         <TouchableOpacity style={styles.voiceCallButton} onPress={handleVoiceCall}>
-          <FontAwesome5 name="microphone" size={36} color="#666" />
+          <FontAwesome5 name="phone-alt" size={36} color="#666" />
         </TouchableOpacity>
 
         {/* Video Call Button */}
