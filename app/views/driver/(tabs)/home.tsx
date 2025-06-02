@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 const Home = () => {
   return (
@@ -55,7 +56,7 @@ const Home = () => {
         <TouchableOpacity style={styles.nearbyButton}>
           <Text style={styles.nearbyButtonText}>Nearby Mechanics</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.sosMainButton}>
+        <TouchableOpacity style={styles.sosMainButton} onPress={() => router.push('../../driver/call/loading')}>
           <Text style={styles.sosMainButtonText}>SOS</Text>
         </TouchableOpacity>
       </View>
