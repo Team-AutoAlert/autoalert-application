@@ -124,7 +124,39 @@ export default function AccountActivity() {
         )}
       />
 
-      
+      {/* Modal for Transaction Details */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View className="flex-1 justify-center items-center bg-black bg-opacity-50 px-4">
+          <View className="bg-gray-200 p-6 rounded-xl w-full">
+            <Text className="text-lg font-bold mb-4">Transaction History</Text>
+            <Text className="mb-2 font-bold">{selectedTransaction?.number}</Text>
+            {filter === "sos" ? (
+              <>
+                <Text>Date: {selectedTransaction?.details.date}</Text>
+                <Text>Duration: {selectedTransaction?.details.duration}</Text>
+                <Text>Charge: {selectedTransaction?.details.charge}</Text>
+                <Text>Type: {selectedTransaction?.details.type}</Text>
+              </>
+            ) : (
+              <>
+                <Text>Service 1: Rs.{selectedTransaction?.details.service1}</Text>
+                <Text>Service 2: Rs.{selectedTransaction?.details.service2}</Text>
+                <Text>Service 3: Rs.{selectedTransaction?.details.service3}</Text>
+                <Text>Commission: {selectedTransaction?.details.commission}</Text>
+                <Text>Tax: {selectedTransaction?.details.tax}</Text>
+                <Text>Total: {selectedTransaction?.details.total}</Text>
+              </>
+            )}
+
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              className="mt-6 bg-red-400 py-2 px-4 rounded-full"
+            >
+              <Text className="text-white text-center">Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
