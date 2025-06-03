@@ -17,11 +17,11 @@ const BillPage = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2937', padding: 20 }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 12 }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FFFFFF', textAlign: 'center', marginBottom: 12 }}>
         Bill Summary
       </Text>
 
-      <Text style={{ color: '#9CA3AF', marginBottom: 10 }}>Completed At: {timestamp}</Text>
+      <Text style={{ color: '#9CA3AF', textAlign: 'center',marginBottom: 10 }}>Completed At: {timestamp}</Text>
 
       <FlatList
         data={parsedServices}
@@ -45,16 +45,16 @@ const BillPage = () => {
 
       {/* Breakdown */}
       <View style={{ marginTop: 16 }}>
-        <Text style={{ color: '#D1D5DB', fontSize: 16, marginBottom: 4 }}>
+        <Text style={{ color: '#D1D5DB', fontSize: 16, textAlign: 'center',marginBottom: 4 }}>
           Service Total: Rs. {serviceTotal.toFixed(2)}
         </Text>
-        <Text style={{ color: '#D1D5DB', fontSize: 16, marginBottom: 4 }}>
+        <Text style={{ color: '#D1D5DB', fontSize: 16, textAlign: 'center',marginBottom: 4 }}>
           Commission (10%): Rs. {commission.toFixed(2)}
         </Text>
-        <Text style={{ color: '#D1D5DB', fontSize: 16, marginBottom: 12 }}>
+        <Text style={{ color: '#D1D5DB', fontSize: 16, textAlign: 'center',marginBottom: 12 }}>
           Tax (8%): Rs. {tax.toFixed(2)}
         </Text>
-        <Text style={{ color: '#10B981', fontSize: 18, fontWeight: 'bold' }}>
+        <Text style={{ color: '#10B981', fontSize: 18, fontWeight: 'bold',textAlign: 'center' }}>
           Total to Pay: Rs. {finalTotal.toFixed(2)}
         </Text>
       </View>
