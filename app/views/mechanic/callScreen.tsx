@@ -12,9 +12,9 @@ interface AlertType {
 
 const CallScreen = () => {
   const params = useLocalSearchParams();
-  const [callDuration, setCallDuration] = useState(0); // seconds
+  const [callDuration, setCallDuration] = useState(0);
   const [callEnded, setCallEnded] = useState(false);
-  const [amountReceived] = useState(100); // static
+  const [amountReceived] = useState(100);
 
   const alert: AlertType = {
     id: Number(params.id),
@@ -57,35 +57,51 @@ const CallScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#e5e7eb' }}>
+    <View style={{ flex: 1, backgroundColor: '#F4F6F8', padding: 20 }}>
       {!callEnded ? (
-        <>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>Call Ongoing</Text>
-          <Text style={{ fontSize: 32, marginBottom: 24 }}>{formatDuration(callDuration)}</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 26, fontWeight: 'bold', color: '#1F2937', marginBottom: 8 }}>
+            Call in Progress
+          </Text>
+          <Text style={{ fontSize: 16, color: '#6B7280', marginBottom: 24 }}>
+            {alert.name} - {alert.vehicle}
+          </Text>
 
-          <View style={{ flexDirection: 'row', gap: 20 }}>
-            <Text style={{ fontSize: 40 }}>
-              {alert.callType === 'video' ? '📹' : '🎤'}
-            </Text>
-          </View>
+          <Text style={{ fontSize: 40, fontWeight: '600', marginBottom: 20 }}>
+            {formatDuration(callDuration)}
+          </Text>
+
+          <Text style={{ fontSize: 60, marginBottom: 40 }}>
+            {alert.callType === 'video' ? '📹' : '🎤'}
+          </Text>
 
           <TouchableOpacity
             onPress={endCall}
             style={{
-              marginTop: 40,
-              backgroundColor: '#ef4444',
-              paddingHorizontal: 24,
-              paddingVertical: 12,
-              borderRadius: 6,
+              backgroundColor: '#EF4444',
+              paddingVertical: 14,
+              paddingHorizontal: 32,
+              borderRadius: 10,
+              shadowColor: '#000',
+              shadowOpacity: 0.2,
+              shadowRadius: 5,
+              elevation: 5,
             }}
           >
-            <Text style={{ color: '#fff', fontSize: 16 }}>End Call</Text>
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>End Call</Text>
           </TouchableOpacity>
-        </>
+        </View>
       ) : (
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '600', marginBottom: 10 }}>Call Ended</Text>
-          <Text style={{ fontSize: 18 }}>Received amount: Rs. {amountReceived.toFixed(2)}</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 26, fontWeight: 'bold', color: '#1F2937', marginBottom: 12 }}>
+            📞 Call Ended
+          </Text>
+          <Text style={{ fontSize: 16, color: '#374151', marginBottom: 8 }}>
+            Duration: {formatDuration(callDuration)}
+          </Text>
+          <Text style={{ fontSize: 18, fontWeight: '600', color: '#10B981' }}>
+            Received amount: Rs. {amountReceived.toFixed(2)}
+          </Text>
         </View>
       )}
     </View>
