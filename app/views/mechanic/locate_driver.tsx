@@ -61,4 +61,54 @@ const LocateDriver = () => {
 
 export default LocateDriver;
 
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f1f5f9',
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heading: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 32,
+    color: '#1E293B',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 4,
+    width: '90%',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  distanceText: {
+    marginTop: 10,
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#334155',
+  },
+  label: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#475569',
+  },
+  manualCompleteBtn: {
+    marginTop: 40,
+    backgroundColor: '#ef4444',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  manualCompleteBtnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
