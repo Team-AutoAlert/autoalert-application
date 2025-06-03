@@ -4,9 +4,9 @@ import { router } from 'expo-router';
 
 const CreateBill = () => {
   const [timestamp, setTimestamp] = useState('');
-  const [serviceName, setServiceName] = useState('');
-  const [price, setPrice] = useState('');
   const [services, setServices] = useState<{ name: string; price: number }[]>([]);
+  const [serviceName, setServiceName] = useState('');
+  const [servicePrice, setServicePrice] = useState('');
 
   useEffect(() => {
     const now = new Date();
@@ -14,30 +14,37 @@ const CreateBill = () => {
     setTimestamp(formatted);
   }, []);
 
-  const addService = () => {
-    if (!serviceName || !price) {
-      Alert.alert('Error', 'Please enter both service name and price');
+  const handleAddService = () => {
+    if (!serviceName || !servicePrice) {
+      Alert.alert('Error', 'Please enter both service name and price.');
       return;
     }
-    const newService = { name: serviceName, price: parseFloat(price) };
-    setServices([...services, newService]);
+
+    const price = parseFloat(servicePrice);
+    if (isNaN(price) || price <= 0) {
+      Alert.alert('Error', 'Please enter a valid price.');
+      return;
+    }
+
+    setServices([...services, { name: serviceName, price }]);
     setServiceName('');
-    setPrice('');
+    setServicePrice('');
   };
 
-  const total = services.reduce((sum, item) => sum + item.price, 0);
+  const handleDeleteService = (index: number) => {
+    const updated = [...services];
+    updated.splice(index, 1);
+    setServices(updated);
+  };
 
   const handleCreateBill = () => {
-    if (services.length === 0) {
-      Alert.alert('Error', 'Please add at least one service');
-      return;
-    }
-
+    const timestamp = new Date().toLocaleString();
+    const total = services.reduce((sum, s) => sum + s.price, 0);
     router.push({
       pathname: '/views/mechanic/bill',
       params: {
-        timestamp,
         services: JSON.stringify(services),
+        timestamp,
         total: total.toFixed(2),
       },
     });
@@ -45,11 +52,14 @@ const CreateBill = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2937', padding: 20 }}>
-      <Text style={{ fontSize: 20, fontWeight: '800', marginBottom: 8, color: '#FFFFFF', textAlign: 'center'}}>
+      
+      <Text style={{ fontSize: 18, fontWeight: '800', marginBottom: 8, color: '#FFFFFF',textAlign: 'center' }}>
         Job Completed at:
       </Text>
-      <Text style={{ fontSize: 16, marginBottom: 16, color: '#D1D5DB', textAlign: 'center' }}>{timestamp}</Text>
-
+      <Text style={{ fontSize: 16, marginBottom: 20, color: '#D1D5DB', textAlign: 'center' }}>{timestamp}</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FFFFFF', textAlign: 'center',marginBottom: 16 }}>
+        Bill Preparation
+      </Text>
       <TextInput
         placeholder="Service Name"
         placeholderTextColor="#9CA3AF"
@@ -59,32 +69,28 @@ const CreateBill = () => {
           backgroundColor: '#374151',
           color: '#FFFFFF',
           padding: 12,
+          borderRadius: 8,
           marginBottom: 10,
-          borderRadius: 6,
-          borderWidth: 1,
-          borderColor: '#4B5563',
         }}
       />
 
       <TextInput
-        placeholder="Price"
+        placeholder="Price (Rs)"
         placeholderTextColor="#9CA3AF"
-        value={price}
-        onChangeText={setPrice}
+        value={servicePrice}
+        onChangeText={setServicePrice}
         keyboardType="numeric"
         style={{
           backgroundColor: '#374151',
           color: '#FFFFFF',
           padding: 12,
+          borderRadius: 8,
           marginBottom: 10,
-          borderRadius: 6,
-          borderWidth: 1,
-          borderColor: '#4B5563',
         }}
       />
 
       <TouchableOpacity
-        onPress={addService}
+        onPress={handleAddService}
         style={{
           backgroundColor: '#3B82F6',
           padding: 14,
@@ -93,46 +99,59 @@ const CreateBill = () => {
           marginBottom: 20,
         }}
       >
-        <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Add Service</Text>
+        <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Add Service</Text>
       </TouchableOpacity>
 
       <FlatList
         data={services}
-        keyExtractor={(item, index) => index.toString()}
-        ListHeaderComponent={() => (
-          <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10, color: '#FFFFFF' }}>
-            Bill Summary
-          </Text>
-        )}
-        renderItem={({ item }) => (
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item, index }) => (
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              paddingVertical: 6,
-              borderBottomColor: '#4B5563',
-              borderBottomWidth: 1,
+              backgroundColor: '#374151',
+              padding: 12,
+              borderRadius: 6,
+              marginBottom: 8,
+              alignItems: 'center',
             }}
           >
-            <Text style={{ color: '#E5E7EB' }}>{item.name}</Text>
-            <Text style={{ color: '#E5E7EB' }}>Rs. {item.price.toFixed(2)}</Text>
+            <Text style={{ color: '#FFFFFF', fontSize: 16 }}>{item.name}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ color: '#FBBF24', fontSize: 16 }}>Rs. {item.price.toFixed(2)}</Text>
+              <TouchableOpacity onPress={() => handleDeleteService(index)}>
+                <Text style={{ color: '#EF4444', marginLeft: 16 }}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
-        ListFooterComponent={() => (
-          <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, color: '#FFFFFF' }}>
-            Total: Rs. {total.toFixed(2)}
-          </Text>
-        )}
+        ListFooterComponent={() =>
+          services.length > 0 ? (
+            <Text
+              style={{
+                textAlign: 'right',
+                fontSize: 16,
+                fontWeight: '600',
+                color: '#10B981',
+                marginTop: 8,
+              }}
+            >
+              Total: Rs. {services.reduce((sum, s) => sum + s.price, 0).toFixed(2)}
+            </Text>
+          ) : null
+        }
       />
 
       <TouchableOpacity
         onPress={handleCreateBill}
+        disabled={services.length === 0}
         style={{
-          backgroundColor: '#10B981',
+          backgroundColor: services.length === 0 ? '#6B7280' : '#10B981',
           padding: 16,
-          borderRadius: 6,
+          borderRadius: 8,
           alignItems: 'center',
-          marginTop: 30,
+          marginTop: 24,
         }}
       >
         <Text style={{ color: '#FFFFFF', fontWeight: 'bold', fontSize: 16 }}>Create Bill</Text>
