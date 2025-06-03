@@ -6,7 +6,12 @@ const PaymentReceived = () => {
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2937', padding: 24, justifyContent: 'center', alignItems: 'center' }}>
       
-      
+      {/* Optional Icon or Animation Placeholder */}
+      <Image
+        source={require('../../../assets/images/successful_payment.png')} 
+        style={{ width: 150, height: 150, marginBottom: 30 }}
+        resizeMode="contain"
+      />
 
       <Text style={{ color: '#10B981', fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>
         Payment Received!
