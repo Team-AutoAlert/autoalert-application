@@ -71,16 +71,22 @@ export default function CallViewScreen() {
         <View style={styles.activeCallContainer}>
           {callType === 'video' && (
             // Video Feed Placeholder
-            <View style={styles.videoFeedPlaceholder}>
-              {/* TODO: Integrate Twilio video feed here */}
-              <Text style={{ color: '#fff' }}>Video Feed Placeholder</Text>
-              <TouchableOpacity style={styles.switchCameraButton} onPress={handleSwitchCamera}>
-                <MaterialCommunityIcons name={isCameraFront ? "camera-switch-outline" : "camera-switch"} size={24} color="#000" />
-              </TouchableOpacity>
+            <View style={styles.videoFeedsContainer}>
+              <View style={styles.videoFeedPlaceholder}>
+                {/* TODO: Integrate Twilio remote video feed here */}
+                <Text style={{ color: '#fff' }}>Remote Video Feed Placeholder</Text>
+              </View>
+              <View style={styles.localVideoFeedPlaceholder}>
+                {/* TODO: Integrate Twilio local video feed here */}
+                <Text style={{ color: '#fff' }}>Local Video</Text>
+                <TouchableOpacity style={styles.switchCameraButton} onPress={handleSwitchCamera}>
+                  <MaterialCommunityIcons name={isCameraFront ? "camera-switch-outline" : "camera-switch"} size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
             </View>
           )}
-          <Text style={styles.callStatusText}>Call Ongoing</Text>
-          <Text style={styles.callDurationText}>{formatDuration(callDuration)}</Text>
+          <Text style={[styles.callStatusText, callType === 'video' && styles.callStatusTextVideo]}>Call Ongoing</Text>
+          <Text style={[styles.callDurationText, callType === 'video' && styles.callDurationTextVideo]}>{formatDuration(callDuration)}</Text>
         </View>
       ) : (
         // Call Ended State
@@ -141,24 +147,41 @@ const styles = StyleSheet.create({
   activeCallContainer: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  videoFeedsContainer: {
+    width: '100%',
+    flex: 1,
+    position: 'relative',
+    marginBottom: 20,
   },
   videoFeedPlaceholder: {
-    width: 300,
-    height: 200,
+    width: '100%',
+    flex: 1,
     backgroundColor: '#444', // Dark placeholder for video
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
+  },
+  localVideoFeedPlaceholder: {
+    width: 100,
+    height: 150,
+    backgroundColor: '#555',
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    zIndex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   switchCameraButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 5,
+    right: 5,
     backgroundColor: '#fff',
     borderRadius: 15,
     padding: 5,
+    zIndex: 2,
   },
   callStatusText: {
     fontSize: 24,
@@ -166,11 +189,17 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     marginBottom: 8,
   },
+  callStatusTextVideo: {
+    fontSize: 18,
+  },
   callDurationText: {
     fontSize: 48,
     color: '#fff',
     fontFamily: 'monospace',
     fontWeight: 'bold',
+  },
+  callDurationTextVideo: {
+    fontSize: 32,
   },
   endedCallContainer: {
     backgroundColor: '#343a40',
