@@ -25,7 +25,24 @@ const CreateBill = () => {
     setPrice('');
   };
 
-  
+  const total = services.reduce((sum, item) => sum + item.price, 0);
+
+  const handleCreateBill = () => {
+    if (services.length === 0) {
+      Alert.alert('Error', 'Please add at least one service');
+      return;
+    }
+
+    router.push({
+      pathname: '/views/mechanic/bill',
+      params: {
+        timestamp,
+        services: JSON.stringify(services),
+        total: total.toFixed(2),
+      },
+    });
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#f3f4f6', padding: 20 }}>
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Job Completed at:</Text>
