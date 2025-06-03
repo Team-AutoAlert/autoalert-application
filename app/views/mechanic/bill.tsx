@@ -78,7 +78,7 @@ const BillPage = () => {
             router.push({
               pathname: '/views/mechanic/payment_waiting',
               params: {
-                total: finalTotal.toFixed(2),
+                total: serviceTotal.toFixed(2),
                 services: JSON.stringify(parsedServices),
               },
             })

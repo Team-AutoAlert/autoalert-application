@@ -35,7 +35,7 @@ const PaymentWaitingPage = () => {
 
       <View style={{ marginTop: 20 }}>
         <Text style={{ color: '#10B981', fontSize: 18, textAlign: 'center',fontWeight: 'bold' }}>
-          Total Paid: Rs. {total}
+          Total Received: Rs. {total}
         </Text>
       </View>
 
