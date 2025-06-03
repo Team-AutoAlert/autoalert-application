@@ -145,7 +145,7 @@ const JobNotifications = () => {
         {/* Job Notifications */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/job_notifications")}>
-            <Ionicons name="notifications" size={26} color="#fff" />
+            <Ionicons name="notifications" size={26} color="#facc15" />
           </TouchableOpacity>
           <Text className="text-white text-xs text-center mt-1">
             Job{'\n'}Notifications

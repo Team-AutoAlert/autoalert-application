@@ -176,7 +176,7 @@ export default function AccountActivity() {
         {/* Account Activity */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/account_activity")}>
-            <MaterialIcons name="assignment" size={26} color="#fff" />
+            <MaterialIcons name="assignment" size={26} color="#facc15" />
           </TouchableOpacity>
           <Text className="text-white text-xs text-center mt-1">
             Account{'\n'}Activity

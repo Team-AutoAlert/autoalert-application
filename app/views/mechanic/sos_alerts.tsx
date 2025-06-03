@@ -132,7 +132,7 @@ const SOSAlerts = () => {
         {/* SOS Alerts */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/sos_alerts")}>
-            <Ionicons name="alert-circle" size={26} color="#f87171" />
+            <Ionicons name="alert-circle" size={26} color="#facc15" />
           </TouchableOpacity>
           <Text className="text-red-400 text-xs text-center mt-1">
             SOS{'\n'}Alerts
