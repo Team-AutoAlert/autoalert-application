@@ -8,7 +8,12 @@ const BillPage = () => {
   const parsedServices = JSON.parse(services as string) as { name: string; price: number }[];
   const serviceTotal = parseFloat(total as string);
 
+  const commissionRate = 0.10;
+  const taxRate = 0.08;
 
+  const commission = serviceTotal * commissionRate;
+  const tax = serviceTotal * taxRate;
+  const finalTotal = serviceTotal + commission + tax;
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2937', padding: 20 }}>
