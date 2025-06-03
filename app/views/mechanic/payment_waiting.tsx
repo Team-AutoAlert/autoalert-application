@@ -8,11 +8,11 @@ const PaymentWaitingPage = () => {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#1F2937', padding: 20 }}>
-      <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 10 }}>
+      <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#FFFFFF',textAlign: 'center', marginBottom: 10 }}>
         Payment Waiting
       </Text>
 
-      <Text style={{ color: '#9CA3AF', fontSize: 14, marginBottom: 20 }}>
+      <Text style={{ color: '#9CA3AF', fontSize: 14, textAlign: 'center',marginBottom: 20 }}>
         Waiting for driver to complete payment. Please confirm payment after driver pays.
       </Text>
 
@@ -34,7 +34,7 @@ const PaymentWaitingPage = () => {
       ))}
 
       <View style={{ marginTop: 20 }}>
-        <Text style={{ color: '#10B981', fontSize: 18, fontWeight: 'bold' }}>
+        <Text style={{ color: '#10B981', fontSize: 18, textAlign: 'center',fontWeight: 'bold' }}>
           Total Paid: Rs. {total}
         </Text>
       </View>
