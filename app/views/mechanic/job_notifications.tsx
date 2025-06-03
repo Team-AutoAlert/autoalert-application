@@ -1,9 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native'
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Dimensions,
+} from 'react-native'
+//import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
-import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 const jobs = [
   {
@@ -11,16 +20,29 @@ const jobs = [
     distance: '100m',
     vehicle: 'Honda Grace',
     problemType: 'Engine',
-    problem: 'Engine Over Heat',
+    problem: 'Engine Overheat',
   },
   {
     id: 2,
     distance: '150m',
-    vehicle: 'Toyota',
+    vehicle: 'Toyota Aqua',
     problemType: 'Battery',
     problem: 'Battery Dead',
   },
-  // Add more mock jobs here
+  {
+    id: 3,
+    distance: '200m',
+    vehicle: 'Suzuki Wagon R',
+    problemType: 'Flat Tyre',
+    problem: 'Front tyre punctured',
+  },
+  {
+    id: 4,
+    distance: '200m',
+    vehicle: 'Suzuki Wagon R',
+    problemType: 'Flat Tyre',
+    problem: 'Front tyre punctured',
+  },
 ]
 
 const JobNotifications = () => {
@@ -40,14 +62,21 @@ const JobNotifications = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Job Notifications</Text>
-      <ScrollView style={styles.list}>
+      <Text style={styles.header}>🔔 Job Notifications</Text>
+      <ScrollView style={styles.scroll}>
         {jobs.map((job) => (
-          <TouchableOpacity key={job.id} onPress={() => handleJobClick(job)} style={styles.card}>
-            <Text>Live Address: {job.distance}</Text>
-            <Text>{job.vehicle}</Text>
-            <TouchableOpacity onPress={handleAccept} style={styles.acceptBtn}>
-              <Text style={styles.btnText}>Accept</Text>
+          <TouchableOpacity key={job.id} style={styles.card} onPress={() => handleJobClick(job)}>
+            <View style={styles.cardHeader}>
+              <FontAwesome5 name="car-side" size={24} color="#1e88e5" />
+              <Text style={styles.vehicle}>{job.vehicle}</Text>
+              <Text style={styles.distance}>{job.distance}</Text>
+            </View>
+            <View style={styles.tagContainer}>
+              <Text style={[styles.tag, getTagColor(job.problemType)]}>{job.problemType}</Text>
+              <Text style={styles.problem}>{job.problem}</Text>
+            </View>
+            <TouchableOpacity style={styles.acceptBtn} onPress={handleAccept}>
+              <Text style={styles.acceptText}>Accept</Text>
             </TouchableOpacity>
           </TouchableOpacity>
         ))}
@@ -55,22 +84,26 @@ const JobNotifications = () => {
 
       {/* Modal */}
       <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
+        <View style={styles.modalWrapper}>
           <View style={styles.modalBox}>
             {selectedJob && (
               <>
-                <Text style={styles.modalText}>Problem Type: {selectedJob.problemType}</Text>
-                <Text>Problem: {selectedJob.problem}</Text>
-                <Text>Vehicle: {selectedJob.vehicle}</Text>
-                <Text>Distance: {selectedJob.distance}</Text>
+                <Text style={styles.modalTitle}>Job Details</Text>
+                <Text style={styles.modalItem}>🚗 Vehicle: {selectedJob.vehicle}</Text>
+                <Text style={styles.modalItem}>📍 Distance: {selectedJob.distance}</Text>
+                <Text style={styles.modalItem}>🛠️ Problem Type: {selectedJob.problemType}</Text>
+                <Text style={styles.modalItem}>📄 Problem: {selectedJob.problem}</Text>
               </>
             )}
-            <View style={styles.modalBtnGroup}>
-              <TouchableOpacity onPress={handleAccept} style={styles.modalAccept}>
-                <Text style={styles.btnText}>Accept</Text>
+            <View style={styles.modalActions}>
+              <TouchableOpacity style={styles.modalAccept} onPress={handleAccept}>
+                <Text style={styles.modalText}>Accept</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalCancel}>
-                <Text style={styles.btnText}>Cancel</Text>
+              <TouchableOpacity
+                style={styles.modalCancel}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -124,57 +157,140 @@ const JobNotifications = () => {
   )
 }
 
+const getTagColor = (type: string) => {
+  switch (type.toLowerCase()) {
+    case 'engine':
+      return { backgroundColor: '#e53935' }
+    case 'battery':
+      return { backgroundColor: '#ffb300' }
+    case 'flat tyre':
+      return { backgroundColor: '#43a047' }
+    default:
+      return { backgroundColor: '#607d8b' }
+  }
+}
+
 export default JobNotifications
 
+const screenWidth = Dimensions.get('window').width
+
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f2f2f2' },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
-  list: { marginTop: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: '#1F2937',
+    paddingTop: 40,
+    paddingHorizontal: 16,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#fff',
+    textAlign: 'center', 
+  },
+  scroll: {
+    paddingBottom: 20,
+  },
   card: {
     backgroundColor: '#fff',
     padding: 16,
-    marginBottom: 12,
-    borderRadius: 8,
+    borderRadius: 12,
+    marginBottom: 14,
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    justifyContent: 'space-between',
+  },
+  vehicle: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+    marginLeft: 10,
+    color: '#333',
+  },
+  distance: {
+    fontSize: 14,
+    color: '#666',
+  },
+  tagContainer: {
+    marginBottom: 10,
+  },
+  tag: {
+    alignSelf: 'flex-start',
+    color: '#fff',
+    fontWeight: 'bold',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+    fontSize: 12,
+    marginBottom: 6,
+  },
+  problem: {
+    color: '#444',
+    fontSize: 14,
   },
   acceptBtn: {
-    backgroundColor: '#ff6b6b',
-    marginTop: 8,
-    paddingVertical: 6,
-    borderRadius: 6,
+    backgroundColor: '#1e88e5',
+    paddingVertical: 10,
+    borderRadius: 8,
     alignItems: 'center',
+    marginTop: 8,
   },
-  btnText: { color: '#fff', fontWeight: 'bold' },
+  acceptText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 
-  modalContainer: {
+  modalWrapper: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    padding: 20,
+    alignItems: 'center',
   },
   modalBox: {
     backgroundColor: '#fff',
-    borderRadius: 10,
+    width: screenWidth * 0.85,
     padding: 20,
+    borderRadius: 12,
+    elevation: 6,
   },
-  modalText: { fontSize: 16, marginBottom: 10, fontWeight: '500' },
-  modalBtnGroup: {
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#333',
+  },
+  modalItem: {
+    fontSize: 14,
+    marginBottom: 6,
+    color: '#555',
+  },
+  modalActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
   },
   modalAccept: {
     backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 6,
-    width: '45%',
-    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
   modalCancel: {
     backgroundColor: '#ccc',
-    padding: 10,
-    borderRadius: 6,
-    width: '45%',
-    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  modalText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 })
