@@ -2,13 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { router } from 'expo-router';
 
+const CreateBill = () => {
+  const [timestamp, setTimestamp] = useState('');
+  const [serviceName, setServiceName] = useState('');
+  const [price, setPrice] = useState('');
+  const [services, setServices] = useState<{ name: string; price: number }[]>([]);
+
+  useEffect(() => {
+    const now = new Date();
+    const formatted = now.toLocaleString();
+    setTimestamp(formatted);
+  }, []);
 
 
 
+  
   return (
     <View style={{ flex: 1, backgroundColor: '#f3f4f6', padding: 20 }}>
       <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Job Completed at:</Text>
       <Text style={{ fontSize: 16, marginBottom: 16 }}>{timestamp}</Text>
+
+      <TextInput
+        placeholder="Service Name"
+        value={serviceName}
+        onChangeText={setServiceName}
+        style={{
+          backgroundColor: '#fff',
+          padding: 12,
+          marginBottom: 10,
+          borderRadius: 6,
+          borderWidth: 1,
+          borderColor: '#d1d5db',
+        }}
+      />
+
+      <TextInput
+        placeholder="Price"
+        value={price}
+        onChangeText={setPrice}
+        keyboardType="numeric"
+        style={{
+          backgroundColor: '#fff',
+          padding: 12,
+          marginBottom: 10,
+          borderRadius: 6,
+          borderWidth: 1,
+          borderColor: '#d1d5db',
+        }}
+      />
 
       <TouchableOpacity
         onPress={addService}
