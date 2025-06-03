@@ -14,7 +14,16 @@ const CreateBill = () => {
     setTimestamp(formatted);
   }, []);
 
-
+  const addService = () => {
+    if (!serviceName || !price) {
+      Alert.alert('Error', 'Please enter both service name and price');
+      return;
+    }
+    const newService = { name: serviceName, price: parseFloat(price) };
+    setServices([...services, newService]);
+    setServiceName('');
+    setPrice('');
+  };
 
   
   return (
