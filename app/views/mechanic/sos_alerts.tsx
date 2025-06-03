@@ -44,7 +44,18 @@ const dummyAlerts: Alert[] = [
 
 const SOSAlerts = () => {
   const handleAccept = (alert: Alert) => {
-    router.push('/views/mechanic/callScreen');
+   // router.push('/views/mechanic/callScreen');
+   router.push({
+    pathname: '/views/mechanic/callScreen',
+    params: {
+      id: alert.id.toString(),
+      name: alert.name,
+      vehicle: alert.vehicle,
+      issue: alert.issue,
+      callType: alert.callType,
+    },
+  });
+
   };
 
   return (
