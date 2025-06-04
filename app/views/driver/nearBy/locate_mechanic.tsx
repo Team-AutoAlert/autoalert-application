@@ -34,6 +34,7 @@ export default function LocateMechanicScreen() {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
+      console.log(location.coords.latitude, location.coords.longitude);
     })();
   }, []);
 
@@ -55,7 +56,7 @@ export default function LocateMechanicScreen() {
 
   // TODO: Center map on the route or between locations
   const initialRegion = {
-    latitude: driverLocation?.latitude || 7.425649,
+    latitude: driverLocation?.latitude || 7.555649,
     longitude: driverLocation?.longitude || 80.624989,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
