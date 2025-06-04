@@ -22,6 +22,10 @@ export default function CallViewScreen() {
       timer = setInterval(() => {
         setCallDuration(prevDuration => prevDuration + 1);
       }, 1000);
+      if (callType === 'video') {
+        // TODO: Initialize Twilio Video SDK and start local camera here
+        // Obtain the local video track
+      }
     } else if (!callActive && callDuration > 0) {
       // Call ended, stop timer and potentially finalize charge
       clearInterval(timer!);
@@ -77,7 +81,7 @@ export default function CallViewScreen() {
                 <Text style={{ color: '#fff' }}>Remote Video Feed Placeholder</Text>
               </View>
               <View style={styles.localVideoFeedPlaceholder}>
-                {/* TODO: Integrate Twilio local video feed here */}
+                {/* TODO: Render Twilio local video track here */}
                 <Text style={{ color: '#fff' }}>Local Video</Text>
                 <TouchableOpacity style={styles.switchCameraButton} onPress={handleSwitchCamera}>
                   <MaterialCommunityIcons name={isCameraFront ? "camera-switch-outline" : "camera-switch"} size={24} color="#000" />
