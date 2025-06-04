@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import MapView, { Marker, Polyline } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+import * as Location from 'expo-location';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -19,8 +21,20 @@ export default function LocateMechanicScreen() {
 
   // TODO: Fetch driver's current location
   useEffect(() => {
-    // Implement logic to get the user's current location (e.g., using expo-location)
-    // setDriverLocation(...) ;
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        // TODO: Handle the case where location permission is denied (e.g., show an error message, disable features)
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setDriverLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })();
   }, []);
 
   // TODO: Fetch mechanic's location (from backend or parameters)
@@ -34,11 +48,8 @@ export default function LocateMechanicScreen() {
   // TODO: Fetch route coordinates when both locations are available
   useEffect(() => {
     if (driverLocation && mechanicLocation) {
-      // Implement logic to fetch route polyline using a Directions API (e.g., Google Directions API)
-      // You might need another library or a direct API call for this.
-      // Example (conceptual):
-      // const fetchedRoute = await fetchRoute(driverLocation, mechanicLocation);
-      // setRouteCoordinates(fetchedRoute);
+      // Route fetching and drawing will be handled by MapViewDirections component
+      // Ensure you have a Google Directions API key and enable the API for your project
     }
   }, [driverLocation, mechanicLocation]);
 
@@ -75,12 +86,18 @@ export default function LocateMechanicScreen() {
             pinColor="blue" // Different color for mechanic marker
           />
         )}
-        {routeCoordinates.length > 0 && (
-          <Polyline
-            coordinates={routeCoordinates as any[]} // Cast to any[] to avoid type issues with empty array initially
-            strokeWidth={4}
-            strokeColor="#8a2be2" // Purple color for the route
-          />
+        {driverLocation && mechanicLocation && (
+           <MapViewDirections
+              origin={driverLocation}
+              destination={mechanicLocation}
+              apikey="YOUR_GOOGLE_MAPS_DIRECTIONS_API_KEY" // Replace with your API key
+              strokeWidth={4}
+              strokeColor="#8a2be2" // Purple color for the route
+              // Optionally add onReady callback to get route details
+              // onReady={(result) => { /* Handle route details if needed */ }}
+              // Optionally add onError callback to handle errors
+              // onError={(error) => { console.error(error); }}
+           />
         )}
       </MapView>
       {/* TODO: Add a button here to recenter map on user location if needed (like in the UI) */}
