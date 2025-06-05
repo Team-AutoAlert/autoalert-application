@@ -1,34 +1,38 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const tutorials = [
-  { id: 1, title: 'Tutorial 01' },
-  { id: 2, title: 'Tutorial 02' },
-  { id: 3, title: 'Tutorial 03' },
-  { id: 4, title: 'Tutorial 04' },
-  { id: 5, title: 'Tutorial 05' },
-  { id: 6, title: 'Tutorial 01' },
-  { id: 7, title: 'Tutorial 02' },
-  { id: 8, title: 'Tutorial 03' },
-  { id: 9, title: 'Tutorial 04' },
-  { id: 10, title: 'Tutorial 05' },
+  { id: 1, title: 'Tutorial 01', link: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4' },
+  { id: 2, title: 'Tutorial 02', link: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
+  { id: 3, title: 'Tutorial 03', link: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
+  { id: 4, title: 'Tutorial 04', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/ForBiggerEscapes.mp4' },
+  { id: 5, title: 'Tutorial 05', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/ForBiggerFun.mp4' },
+  { id: 6, title: 'Tutorial 06', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/ForBiggerJoyrides.mp4' },
+  { id: 7, title: 'Tutorial 07', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/ForBiggerMeltdowns.mp4' },
+  { id: 8, title: 'Tutorial 08', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/Sintel.mp4' },
+  { id: 9, title: 'Tutorial 09', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/SubaruOutbackOnStreetAndDirt.mp4' },
+  { id: 10, title: 'Tutorial 10', link: 'http://commondatastorage.googleapis.com/gtv-uploads/sample/TearsOfSteel.mp4' },
 ];
 
 const Tutorial = () => {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       {/* Title */}
       <Text style={styles.title}>Maintain Tutorials</Text>
       {/* Scrollable List */}
       <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={true}>
-        {tutorials.map((item, idx) => (
-          <View key={item.id} style={styles.tutorialItem}>
-            <Image
-              source={{ uri: 'https://img.icons8.com/color/48/video-lesson.png' }}
-              style={styles.tutorialIcon}
-            />
-            <Text style={styles.tutorialText}>{item.title}</Text>
-          </View>
+        {tutorials.map((item) => (
+          <TouchableOpacity key={item.id} onPress={() => router.push({ pathname: '/views/driver/tutorial/videoPlayer', params: { videoUri: item.link } })}>
+            <View style={styles.tutorialItem}>
+              <Image
+                source={{ uri: 'https://img.icons8.com/color/48/video-lesson.png' }}
+                style={styles.tutorialIcon}
+              />
+              <Text style={styles.tutorialText}>{item.title}</Text>
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
       {/* Back Button */}
