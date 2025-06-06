@@ -64,10 +64,13 @@ export default function MechProfile() {
         <Text className="text-yellow-500 text-lg">★★★★☆ (4.5)</Text>
     </View>
 
-    {/* Availability */}
-    <View className="bg-green-100 border border-green-400 p-3 rounded-xl">
-        <Text className="text-green-800 font-semibold text-center">Available for Jobs</Text>
-    </View>
+    {/* Edit Button */}
+        <TouchableOpacity
+            className="bg-blue-600 py-3 rounded-xl items-center shadow"
+            onPress={() => router.push("/views/mechanic/edit_profile")}
+        >
+            <Text className="text-white font-semibold text-base">Edit Profile</Text>
+        </TouchableOpacity>
     </View>
    </ScrollView>
 
