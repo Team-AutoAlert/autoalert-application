@@ -1,5 +1,5 @@
 // app/views/mechanic/mech_profile.tsx
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView, ScrollView } from "react-native";
 import { Ionicons,MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
 import { useRouter } from "expo-router";
@@ -32,6 +32,44 @@ export default function MechProfile() {
           <Ionicons name="log-out-outline" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
+
+      {/* Page Content */}
+    <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 80 }}>
+    <View className="p-4">
+    {/* Profile Card */}
+    <View className="bg-white p-4 rounded-2xl shadow-lg mb-4 items-center">
+        <FontAwesome name="user-circle" size={80} color="#4b5563" className="mb-3" />
+        <Text className="text-xl font-bold text-gray-800">John Doe</Text>
+        <Text className="text-gray-500">Colombo</Text>
+    </View>
+
+    {/* Info Fields */}
+    <View className="bg-white p-4 rounded-2xl shadow mb-4">
+        <Text className="text-gray-700 font-semibold mb-1">Email</Text>
+        <Text className="text-gray-900 mb-3">john@example.com</Text>
+
+        <Text className="text-gray-700 font-semibold mb-1">Phone</Text>
+        <Text className="text-gray-900 mb-3">+94 712345678</Text>
+
+        <Text className="text-gray-700 font-semibold mb-1">Specialties</Text>
+        <Text className="text-gray-900 mb-3">Engine Repair, Brake Systems, Diagnostics</Text>
+
+        <Text className="text-gray-700 font-semibold mb-1">Years of Experience</Text>
+        <Text className="text-gray-900 mb-3">5+ years</Text>
+
+        <Text className="text-gray-700 font-semibold mb-1">Certifications</Text>
+        <Text className="text-gray-900 mb-3">ASE Certified, Hybrid Vehicle Training</Text>
+
+        <Text className="text-gray-700 font-semibold mb-1">Rating</Text>
+        <Text className="text-yellow-500 text-lg">★★★★☆ (4.5)</Text>
+    </View>
+
+    {/* Availability */}
+    <View className="bg-green-100 border border-green-400 p-3 rounded-xl">
+        <Text className="text-green-800 font-semibold text-center">Available for Jobs</Text>
+    </View>
+    </View>
+   </ScrollView>
 
       {/* Slide Menu */}
       {menuOpen && (
@@ -102,15 +140,7 @@ export default function MechProfile() {
       </View>
       
 
-      {/* Page Content */}
-      <View className="p-4">
-        <Text className="text-lg font-bold mb-2">Profile Information</Text>
-        <Text>Name: John Doe</Text>
-        <Text>Email: john@example.com</Text>
-        <Text>Phone: +94 712345678</Text>
-        <Text>Location: Colombo</Text>
-        {/* You can add more fields or edit features here */}
-      </View>
+    
     </SafeAreaView>
   );
 }
