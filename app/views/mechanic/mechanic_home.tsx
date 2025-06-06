@@ -12,6 +12,15 @@ export default function MechanicHome() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  const menuItems = [
+    { label: "Mech Profile", path: "/views/mechanic/mech_profile" },
+    { label: "Skills", path: "/views/mechanic/skills" },
+    { label: "Experience", path: "/views/mechanic/experience" },
+    { label: "Payment Account Option", path: "/views/mechanic/payment_options" },
+    { label: "Add Certification", path: "/views/mechanic/certification" },
+    { label: "Mech Rating", path: "/views/mechanic/mech_rating" },
+  ];
+
   return (
     <View className="flex-1 bg-gray-800 relative px-4 pt-8">
       {/* Header */}
@@ -49,7 +58,7 @@ export default function MechanicHome() {
             onValueChange={(itemValue) => setAvailability(itemValue)}
             style={{
               height: 55,
-              width:150,
+              width: 150,
               color:
                 availability === "Busy"
                   ? "#dc2626"
@@ -84,7 +93,6 @@ export default function MechanicHome() {
 
       {/* Bottom Navigation */}
       <View className="absolute bottom-0 left-0 right-0 bg-gray-900 py-3 px-6 flex-row justify-between items-center rounded-t-2xl shadow-lg">
-        {/* Home */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/mechanic_home")}>
             <Ionicons name="home" size={26} color="#facc15" />
@@ -94,7 +102,6 @@ export default function MechanicHome() {
           </Text>
         </View>
 
-        {/* Account Activity */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/account_activity")}>
             <MaterialIcons name="assignment" size={26} color="#fff" />
@@ -104,7 +111,6 @@ export default function MechanicHome() {
           </Text>
         </View>
 
-        {/* SOS Alerts */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/sos_alerts")}>
             <Ionicons name="alert-circle" size={26} color="#f87171" />
@@ -114,7 +120,6 @@ export default function MechanicHome() {
           </Text>
         </View>
 
-        {/* Job Notifications */}
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/job_notifications")}>
             <Ionicons name="notifications" size={26} color="#fff" />
@@ -123,41 +128,31 @@ export default function MechanicHome() {
             Job{'\n'}Notifications
           </Text>
         </View>
-
       </View>
-
-
-
 
       {/* Slide Menu with tap-to-close backdrop */}
       {menuOpen && (
         <>
-          {/* Backdrop - tap to close */}
           <TouchableOpacity
             className="absolute top-0 left-0 bottom-0 right-0 bg-black opacity-40 z-40"
             activeOpacity={1}
             onPress={toggleMenu}
           />
 
-          {/* Slide Menu */}
-          <View className="absolute top-0 left-0 bottom-0 w-2/3 bg-gray-100 px-4 py-10 z-50">
-            <TouchableOpacity className="mb-6" onPress={toggleMenu}>
-              <FontAwesome name="user-circle" size={28} color="#444" />
+          <View className="absolute top-0 left-0 bottom-0 w-2/3 bg-gray-100 px-4 py-10 z-50 ">
+            <TouchableOpacity className="mb-6 items-center" onPress={toggleMenu}>
+              <FontAwesome name="user-circle" size={60} color="#444" />
             </TouchableOpacity>
-            {[
-              "Mech Profile",
-              "Skills",
-              "Experience",
-              "Payment Account Option",
-              "Add Certification",
-              "Mech Rating",
-            ].map((item) => (
+            {menuItems.map((item) => (
               <TouchableOpacity
-                key={item}
+                key={item.label}
                 className="mb-4 border-b border-gray-400 pb-2"
-                onPress={toggleMenu}
+                onPress={() => {
+                  toggleMenu();
+                  router.push(item.path);
+                }}
               >
-                <Text className="text-lg text-gray-800">{item}</Text>
+                <Text className="text-lg text-gray-800">{item.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
