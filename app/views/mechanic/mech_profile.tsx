@@ -1,6 +1,6 @@
 // app/views/mechanic/mech_profile.tsx
 import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { Ionicons,MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 //import MechanicSlideMenu from "../../components/MechanicSlideMenu"; // Adjust path if needed
@@ -23,13 +23,14 @@ export default function MechProfile() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       {/* Top Header */}
-      <View className="flex-row items-center justify-between px-4 py-3 bg-blue-600">
+      <View className="flex-row items-center justify-between px-4 py-5 bg-gray-800">
         <TouchableOpacity onPress={toggleMenu}>
                   <Ionicons name="menu" size={28} color="#fff" />
         </TouchableOpacity>
         <Text className="text-white text-lg font-semibold">Mechanic Profile</Text>
-        {/* Spacer */}
-        <View className="w-8" /> 
+        <TouchableOpacity onPress={() => router.replace("/")}>
+          <Ionicons name="log-out-outline" size={28} color="#fff" />
+        </TouchableOpacity>
       </View>
 
       {/* Slide Menu */}
@@ -60,6 +61,45 @@ export default function MechProfile() {
           </View>
         </>
       )}
+
+      {/* Bottom Navigation */}
+      <View className="absolute bottom-0 left-0 right-0 bg-gray-900 py-3 px-6 flex-row justify-between items-center rounded-t-2xl shadow-lg">
+        <View className="flex-1 items-center">
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/mechanic_home")}>
+            <Ionicons name="home" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text className="text-white text-xs text-center mt-1">
+            MECH{'\n'}Home
+          </Text>
+        </View>
+
+        <View className="flex-1 items-center">
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/account_activity")}>
+            <MaterialIcons name="assignment" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text className="text-white text-xs text-center mt-1">
+            Account{'\n'}Activity
+          </Text>
+        </View>
+
+        <View className="flex-1 items-center">
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/sos_alerts")}>
+            <Ionicons name="alert-circle" size={26} color="#f87171" />
+          </TouchableOpacity>
+          <Text className="text-red-400 text-xs text-center mt-1">
+            SOS{'\n'}Alerts
+          </Text>
+        </View>
+
+        <View className="flex-1 items-center">
+          <TouchableOpacity onPress={() => router.push("/views/mechanic/job_notifications")}>
+            <Ionicons name="notifications" size={26} color="#fff" />
+          </TouchableOpacity>
+          <Text className="text-white text-xs text-center mt-1">
+            Job{'\n'}Notifications
+          </Text>
+        </View>
+      </View>
       
 
       {/* Page Content */}
