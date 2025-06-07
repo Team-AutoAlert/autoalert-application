@@ -91,7 +91,7 @@ export default function MechanicHome() {
         </TouchableOpacity>
       </View>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation 
       <View className="absolute bottom-0 left-0 right-0 bg-gray-900 py-3 px-6 flex-row justify-between items-center rounded-t-2xl shadow-lg">
         <View className="flex-1 items-center">
           <TouchableOpacity onPress={() => router.push("/views/mechanic/mechanic_home")}>
@@ -128,7 +128,7 @@ export default function MechanicHome() {
             Job{'\n'}Notifications
           </Text>
         </View>
-      </View>
+      </View> */}
 
       {/* Slide Menu with tap-to-close backdrop */}
       {menuOpen && (
