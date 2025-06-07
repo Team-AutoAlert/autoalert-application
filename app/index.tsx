@@ -15,9 +15,7 @@ export default function Index() {
       />
 
       {/* App Name */}
-      <Text className="text-4xl font-bold text-blue-600 mb-2 tracking-wide">
-        AUTO ALERT
-      </Text>
+
       <Text className="text-base text-gray-600 mb-10 text-center">
         Empowering roadside assistance for mechanics and drivers
       </Text>
