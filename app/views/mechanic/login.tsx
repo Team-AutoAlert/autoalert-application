@@ -26,7 +26,7 @@ export default function MechanicLogin() {
     if (email === "mechanic@example.com" && password === "password123") {
       Alert.alert("Success", "Logged in successfully!");
       setTimeout(() => {
-        router.replace("/views/mechanic/mechanic_home");
+        router.replace("/views/mechanic/(tabs)");
       }, 500);
     } else {
       Alert.alert("Error", "Invalid credentials.");
