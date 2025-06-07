@@ -1,10 +1,12 @@
 // app/views/mechanic/verify_phone.tsx
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from "react-native";
 import { useState, useRef } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { verifyPhone, resendCode } from "../../services/driver/auth_service";
 
 export default function MobileVerify() {
   const router = useRouter();
+  const { email, phoneNumber } = useLocalSearchParams();
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputs = [
     useRef<TextInput>(null),
@@ -14,7 +16,6 @@ export default function MobileVerify() {
     useRef<TextInput>(null),
     useRef<TextInput>(null)
   ];
-  const mobile = "077xxxx467";
 
   // Handle code input via keypad
   const handleKeyPress = (value: string) => {
@@ -45,6 +46,45 @@ export default function MobileVerify() {
   // Clear code
   const handleClear = () => setCode(["", "", "", "", "", ""]);
 
+  const handleVerify = async () => {
+    const fullCode = code.join('');
+    if (fullCode.length !== 6) {
+      Alert.alert("Error", "Please enter the 6-digit code.");
+      return;
+    }
+
+    if (typeof email !== 'string') {
+      Alert.alert("Error", "User ID is missing.");
+      return;
+    }
+
+    const result = await verifyPhone(email, fullCode);
+
+    if (result.success) {
+      Alert.alert("Success", result.message);
+      router.replace("/views/driver/vehicle_info");
+    } else {
+      Alert.alert("Error", result.message);
+    }
+  };
+
+  const handleResend = async () => {
+    if (typeof email !== 'string') {
+      Alert.alert("Error", "User ID is missing. Cannot resend code.");
+      return;
+    }
+
+    const result = await resendCode(email);
+
+    if (result.success) {
+      Alert.alert("Success", result.message);
+      // Optionally, you might want to clear the code input here or show a timer.
+      handleClear();
+    } else {
+      Alert.alert("Error", result.message);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -57,7 +97,7 @@ export default function MobileVerify() {
       {/* Subtext */}
       <Text className="text-white text-lg font-mono text-center mb-6">
         Code has been sent to{"\n"}
-        {mobile}
+        {phoneNumber}
       </Text>
       {/* Code Input */}
       <View className="flex-row justify-center mb-6">
@@ -77,7 +117,7 @@ export default function MobileVerify() {
       </View>
       {/* Verify Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/driver/vehicle_info")}
+        onPress={handleVerify}
         className="w-full bg-blue-300 py-3 rounded-xl mb-3 border-2 border-white"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
@@ -86,7 +126,7 @@ export default function MobileVerify() {
       </TouchableOpacity>
       {/* Resend Button */}
       <TouchableOpacity
-        onPress={handleClear}
+        onPress={handleResend}
         className="w-full bg-blue-300 py-3 rounded-xl mb-6 border-2 border-white"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
