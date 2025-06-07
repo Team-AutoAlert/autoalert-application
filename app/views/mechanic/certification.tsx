@@ -11,7 +11,9 @@ export default function Certification() {
     { name: "", institution: "", year: "" },
   ]);
 
-  
+  const handleAdd = () => {
+    setCertifications([...certifications, { name: "", institution: "", year: "" }]);
+  };
 
   const handleChange = (index: number, field: string, value: string) => {
     const updated = [...certifications];
@@ -64,7 +66,12 @@ export default function Certification() {
           </View>
         ))}
 
-        
+        <TouchableOpacity
+          onPress={handleAdd}
+          className="bg-blue-600 py-3 rounded-xl items-center mb-4"
+        >
+          <Text className="text-white font-semibold">Add Another Certification</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => {
