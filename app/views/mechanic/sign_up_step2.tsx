@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker"; // Install this if you haven't
 import { useRouter } from "expo-router";
 
 export default function SignUpStep2() {
@@ -28,11 +29,9 @@ export default function SignUpStep2() {
     } else if (!/^\d{10}$/.test(phoneNumber)) {
       newErrors.phoneNumber = "Enter a valid 10-digit phone number.";
     }
-
-    if (!language.trim()) newErrors.language = "Preferred language is required.";
+    if (!language) newErrors.language = "Please select a preferred language.";
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
@@ -74,13 +73,20 @@ export default function SignUpStep2() {
           />
           {errors.phoneNumber && <Text className="text-red-500 mb-2">{errors.phoneNumber}</Text>}
 
-          {/* Preferred Language */}
-          <TextInput
-            placeholder="Preferred Language"
-            value={language}
-            onChangeText={setLanguage}
-            className="border border-gray-300 rounded-xl px-4 py-3 mb-1 text-base"
-          />
+          {/* Preferred Language Dropdown */}
+          <View className="border border-gray-300 rounded-xl mb-1">
+            <Picker
+              selectedValue={language}
+              onValueChange={(itemValue) => setLanguage(itemValue)}
+              style={{ height: 50 }}
+            >
+              <Picker.Item label="Select Preferred Language" value="" enabled={false} />
+              <Picker.Item label="English" value="English" />
+              <Picker.Item label="Sinhala" value="Sinhala" />
+              <Picker.Item label="Tamil" value="Tamil" />
+              <Picker.Item label="Hindi" value="Hindi" />
+            </Picker>
+          </View>
           {errors.language && <Text className="text-red-500 mb-4">{errors.language}</Text>}
 
           {/* Next Button */}
