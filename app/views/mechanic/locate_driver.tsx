@@ -53,7 +53,14 @@ export default function LocateDriverScreen() {
     });
   }, [driverId]);
 
-  
+  // Watch for arrival condition
+  useEffect(() => {
+    if (driverLocation && mechanicLocation) {
+      if (areLocationsEqual(driverLocation, mechanicLocation)) {
+        router.replace('/views/mechanic/job_complete'); // Change to your screen
+      }
+    }
+  }, [driverLocation, mechanicLocation]);
 
   const initialRegion = {
     latitude: mechanicLocation?.latitude || 7.556,
