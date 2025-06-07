@@ -1,8 +1,8 @@
-// app/views/mechanic/select_specialization.tsx
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
 import * as DocumentPicker from "expo-document-picker";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 const SPECIALIZATIONS = [
   "Engine Repair",
@@ -32,41 +32,52 @@ export default function SelectSpecialization() {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 24 }} className="bg-white flex-1">
-      <Text className="text-xl font-semibold text-blue-600 mb-6">Select Specializations</Text>
+    <ScrollView contentContainerStyle={{ paddingVertical: 32, paddingHorizontal: 20 }} className="bg-white flex-1">
+      <Text className="text-3xl text-center font-bold text-blue-600 mb-2">Select Your Specializations</Text>
+      <Text className="text-gray-600 text-center mb-6">Choose all the areas you're skilled in.</Text>
 
-      <View className="flex flex-wrap flex-row gap-2 mb-6">
-        {SPECIALIZATIONS.map((item) => (
-          <TouchableOpacity
-            key={item}
-            onPress={() => toggleSelection(item)}
-            className={`px-4 py-2 rounded-full border ${
-              selected.includes(item) ? "bg-blue-600 border-blue-600" : "border-gray-400"
-            }`}
-          >
-            <Text className={`text-sm ${selected.includes(item) ? "text-white" : "text-gray-800"}`}>
-              {item}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      <View className="flex flex-wrap flex-row gap-3 mb-8">
+        {SPECIALIZATIONS.map((item) => {
+          const isSelected = selected.includes(item);
+          return (
+            <TouchableOpacity
+              key={item}
+              onPress={() => toggleSelection(item)}
+              className={`px-5 py-2 rounded-full border ${
+                isSelected ? "bg-blue-600 border-blue-600" : "border-gray-300"
+              }`}
+            >
+              <Text className={`text-sm font-medium ${isSelected ? "text-white" : "text-gray-700"}`}>
+                {item}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       <Text className="text-base font-medium mb-2">Upload Certification Document</Text>
       <TouchableOpacity
         onPress={pickCertificate}
-        className="border border-dashed border-gray-400 bg-gray-100 py-10 items-center justify-center rounded-lg mb-4"
+        className="border-2 border-dashed border-gray-300 bg-gray-50 py-10 px-4 items-center justify-center rounded-xl mb-6"
       >
-        <Text className="text-gray-600">
-          {certificate ? certificate.name : "Upload File (Image or PDF)"}
-        </Text>
+        {certificate ? (
+          <Text className="text-blue-600 font-medium">{certificate.name}</Text>
+        ) : (
+          <>
+            <Ionicons name="cloud-upload-outline" size={32} color="#9ca3af" />
+            <Text className="text-gray-500 mt-2">Upload File (Image or PDF)</Text>
+          </>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => router.push("/views/mechanic/confirm_details")}
-        className="bg-blue-600 py-3 rounded-lg disabled:opacity-50"
+        className={`py-4 rounded-xl ${
+          selected.length === 0 || !certificate ? "bg-blue-300" : "bg-blue-600"
+        }`}
         disabled={selected.length === 0 || !certificate}
       >
-        <Text className="text-white text-center font-medium text-base">Next</Text>
+        <Text className="text-white text-center text-base font-semibold">Next</Text>
       </TouchableOpacity>
     </ScrollView>
   );
