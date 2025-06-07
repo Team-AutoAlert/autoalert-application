@@ -45,7 +45,7 @@ export default function ContactInfo() {
 
     if (result.success) {
       Alert.alert("Success", result.message);
-      router.replace("/views/driver/mobile_verify");
+      router.replace({ pathname: "/views/driver/mobile_verify", params: { email, phoneNumber } });
     } else {
       Alert.alert("Error", result.message);
     }
