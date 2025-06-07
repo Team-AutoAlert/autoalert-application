@@ -1,66 +1,90 @@
-// app/views/mechanic/verify_phone.tsx
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput as RNTextInput,
+} from "react-native";
 import { useRouter } from "expo-router";
 
 export default function VerifyPhone() {
   const router = useRouter();
-  const [code, setCode] = useState(["", "", "", ""]);
+  const [code, setCode] = useState(["", "", "", "", "", ""]); // 6 digits
+  const inputs = useRef<RNTextInput[]>([]);
 
-  const handleKeyPress = (value: string) => {
-    const nextIndex = code.findIndex((digit) => digit === "");
-    if (nextIndex !== -1) {
+  const handleChange = (text: string, index: number) => {
+    if (/^\d?$/.test(text)) {
       const newCode = [...code];
-      newCode[nextIndex] = value;
+      newCode[index] = text;
       setCode(newCode);
+
+      if (text && index < 5) {
+        inputs.current[index + 1]?.focus();
+      }
+
+      if (newCode.join("").length === 6) {
+        // Trigger action after 6 digits entered
+        router.push("/views/mechanic/upload_nic");
+      }
     }
   };
 
-  const handleClear = () => setCode(["", "", "", ""]);
+  const handleKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === "Backspace" && code[index] === "") {
+      if (index > 0) inputs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleClear = () => {
+    setCode(["", "", "", "", "", ""]);
+    inputs.current[0]?.focus();
+  };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
-      className="flex-1 justify-center items-center bg-white px-6"
+      className="flex-1 bg-white"
     >
-      <Text className="text-xl font-semibold text-blue-600 mb-6">Verify Phone Number</Text>
-      <Text className="mb-6 text-gray-700">Code has been sent to 07X-xxxxxxx</Text>
+      <View className="flex-1 items-center justify-center px-6 pt-12">
+        <Text className="text-2xl font-bold text-blue-600 mb-2">Verify Phone Number</Text>
+        <Text className="text-gray-600 text-center mb-6">
+          Enter the 6-digit code sent to your number
+        </Text>
 
-      <View className="flex-row justify-center space-x-3 mb-6">
-        {code.map((digit, idx) => (
-          <TextInput
-            key={idx}
-            value={digit}
-            maxLength={1}
-            keyboardType="number-pad"
-            className="border w-12 h-12 text-center text-lg rounded"
-            editable={false}
-          />
-        ))}
-      </View>
+        {/* OTP Inputs */}
+        <View className="flex-row space-x-2 mb-6">
+          {code.map((digit, index) => (
+            <TextInput
+              key={index}
+              ref={(ref) => (inputs.current[index] = ref!)}
+              value={digit}
+              onChangeText={(text) => handleChange(text, index)}
+              onKeyPress={(e) => handleKeyPress(e, index)}
+              maxLength={1}
+              keyboardType="number-pad"
+              className="w-12 h-14 border border-gray-300 rounded-xl text-center text-xl font-semibold bg-gray-100"
+              autoFocus={index === 0}
+            />
+          ))}
+        </View>
 
-      <TouchableOpacity
-        onPress={() => router.push("/views/mechanic/upload_nic")}
-        className="bg-blue-600 w-full py-3 rounded-lg mb-4"
-      >
-        <Text className="text-white text-center font-medium text-base">Verify</Text>
-      </TouchableOpacity>
+        {/* Buttons */}
+        <TouchableOpacity
+          onPress={() => router.push("/views/mechanic/upload_nic")}
+          disabled={code.join("").length !== 6}
+          className={`w-full py-4 rounded-xl ${
+            code.join("").length === 6 ? "bg-blue-600" : "bg-blue-300"
+          }`}
+        >
+          <Text className="text-white text-center text-base font-semibold">Verify</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={handleClear} className="mb-6">
-        <Text className="text-blue-600 font-medium">Resend</Text>
-      </TouchableOpacity>
-
-      {/* Simple number pad */}
-      <View className="flex-wrap w-full flex-row justify-between px-10">
-        {["1","2","3","4","5","6","7","8","9","0"].map((num) => (
-          <TouchableOpacity
-            key={num}
-            onPress={() => handleKeyPress(num)}
-            className="w-[30%] bg-gray-200 m-1 py-4 rounded items-center"
-          >
-            <Text className="text-lg">{num}</Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity onPress={handleClear} className="mt-4">
+          <Text className="text-blue-600 font-medium">Resend Code</Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );

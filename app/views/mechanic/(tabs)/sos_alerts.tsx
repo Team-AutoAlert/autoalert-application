@@ -1,0 +1,1 @@
+export { default } from "../sos_alerts";
