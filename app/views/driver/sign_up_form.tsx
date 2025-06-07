@@ -1,5 +1,5 @@
 // app/views/mechanic/sign_up_step1.tsx
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 
@@ -10,6 +10,26 @@ export default function SignUpForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleNext = () => {
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert("Error", "Password must be at least 6 characters long.");
+      return;
+    }
+
+    router.push({
+      pathname: "/views/driver/contact_info",
+      params: { firstName, lastName, email, password },
+    });
+  };
 
   return (
     <View className="flex-1 justify-center items-center bg-black px-6">
@@ -73,7 +93,7 @@ export default function SignUpForm() {
 
       {/* Next Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/driver/contact_info")}
+        onPress={handleNext}
         className="bg-blue-300 w-full py-4 rounded-xl"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
