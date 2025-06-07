@@ -99,7 +99,15 @@ export default function PaymentOptions() {
               <Text className="text-gray-800 font-medium">Mobile Payment (eZ Cash)</Text>
               <Switch value={mobilePay} onValueChange={setMobilePay} />
             </View>
-            
+            {mobilePay && (
+              <TextInput
+                placeholder="Mobile Number (07XXXXXXXX)"
+                keyboardType="phone-pad"
+                value={ezMobile}
+                onChangeText={setEzMobile}
+                className="border px-3 py-2 rounded-md"
+              />
+            )}
           </View>
 
           {/* Save Button */}
