@@ -90,7 +90,29 @@ export default function PaymentOptions() {
               <Text className="text-gray-800 font-medium">Credit / Debit Card</Text>
               <Switch value={card} onValueChange={setCard} />
             </View>
-            
+            {card && (
+              <View className="space-y-3">
+                <TextInput
+                  placeholder="Cardholder Name"
+                  value={cardHolder}
+                  onChangeText={setCardHolder}
+                  className="border px-3 py-2 rounded-md"
+                />
+                <TextInput
+                  placeholder="Card Number"
+                  keyboardType="number-pad"
+                  value={cardNumber}
+                  onChangeText={setCardNumber}
+                  className="border px-3 py-2 rounded-md"
+                />
+                <TextInput
+                  placeholder="Expiry Date (MM/YY)"
+                  value={expiry}
+                  onChangeText={setExpiry}
+                  className="border px-3 py-2 rounded-md"
+                />
+              </View>
+            )}
           </View>
 
           {/* eZ Cash */}
