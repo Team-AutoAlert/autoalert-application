@@ -47,3 +47,19 @@ export const fetchUserProfile = async (userId: string) => {
     return { success: false, message: 'Network error. Please try again.' };
   }
 };
+
+export const fetchFullUserProfile = async (userId: string) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/profile`);
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, userProfile: data };
+    } else {
+      return { success: false, message: data.message || 'Failed to fetch full user profile' };
+    }
+  } catch (error) {
+    console.error('Fetch full user profile API error:', error);
+    return { success: false, message: 'Network error. Please try again.' };
+  }
+};
