@@ -2,8 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useAuth } from '../../../context/AuthContext';
 
 const Home = () => {
+  const { userProfile } = useAuth();
+
+  const vehicle = userProfile?.driverDetails?.vehicles?.[0] || null;
+  const vehicleDisplay = vehicle ? `${vehicle.brand} ${vehicle.model}` : 'N/A';
+  const vehicleRegistrationNumber = vehicle?.registrationNumber || 'N/A';
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -38,7 +45,8 @@ const Home = () => {
       {/* Vehicle Info */}
       <View style={styles.vehicleInfo}>
         <Text style={styles.vehicleLabel}>Vehicle</Text>
-        <Text style={styles.vehicleName}>Honda Grace</Text>
+        <Text style={styles.vehicleName}>{vehicleDisplay}</Text>
+        <Text style={styles.vehicleRegistration}>({vehicleRegistrationNumber})</Text>
         <Ionicons name="ellipse" size={12} color="green" style={{ marginLeft: 6 }} />
       </View>
 
@@ -169,6 +177,12 @@ const styles = StyleSheet.create({
     color: '#222',
     fontSize: 16,
     fontWeight: '500',
+  },
+  vehicleRegistration: {
+    color: '#222',
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
   },
   problemInputContainer: {
     marginBottom: 18,
