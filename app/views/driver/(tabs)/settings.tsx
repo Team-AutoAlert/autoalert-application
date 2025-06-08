@@ -1,9 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../../context/AuthContext';
 
 const Settings = () => {
   const router = useRouter();
+  const { logout } = useAuth();
+
+  const handleSignOut = async () => {
+    await logout();
+    router.replace('/views/driver/driver_login');
+  };
 
   return (
     <View style={styles.container}>
@@ -21,11 +28,11 @@ const Settings = () => {
       <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/settings/vehicle_details')}>
         <Text style={styles.buttonText}>Vehicle Details</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}onPress={() => router.push('../../driver/settings/user_profile')}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('../../driver/settings/user_profile')}>
         <Text style={styles.buttonText}>User Profile</Text>
       </TouchableOpacity>
       {/* Sign Out */}
-      <TouchableOpacity style={styles.signOutButton}>
+      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </TouchableOpacity>
     </View>
