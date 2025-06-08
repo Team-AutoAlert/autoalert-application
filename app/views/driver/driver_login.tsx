@@ -2,11 +2,13 @@ import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useRouter } from 'expo-router';
 import { login } from "../../services/driver/auth_service";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DriverLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const auth = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -18,8 +20,12 @@ export default function DriverLogin() {
 
     if (result.success) {
       Alert.alert("Success", result.message);
-      console.log("login success")
-      router.replace({ pathname: '/views/driver/home' });
+      console.log("login success");
+      if (result.token && result.user && result.user.email) {
+        await auth.login(result.user.email, result.token);
+      }
+      // The _layout.tsx will handle the navigation based on AuthContext state change
+      // router.replace({ pathname: '/views/driver/home' }); 
     } else {
       Alert.alert("Error", result.message);
     }
