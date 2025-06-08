@@ -1,0 +1,33 @@
+const API_BASE_URL = 'http://192.168.178.251:3001/api';
+
+export const addVehicle = async (userId: string, vehicleData: {
+  vehicleId: string;
+  brand: string;
+  model: string;
+  fuelType: string;
+  year: number;
+  registrationNumber: string;
+  lastServiceDate?: string;
+  nextServiceDue?: string;
+}) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/vehicles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(vehicleData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, message: data.message, data: data.data };
+    } else {
+      return { success: false, message: data.message || 'Failed to add vehicle' };
+    }
+  } catch (error) {
+    console.error('Add vehicle API error:', error);
+    return { success: false, message: 'Network error. Please try again.' };
+  }
+};
