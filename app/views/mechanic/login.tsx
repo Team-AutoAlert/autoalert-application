@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { mechanicLogin } from "../../services/mechanic/auth_service";
 import {
   View,
   Text,
@@ -18,54 +19,21 @@ export default function MechanicLogin() {
   const router = useRouter();
 
   const handleLogin = async () => {
-  if (!email || !password) {
-    Alert.alert("Error", "Please fill in both fields.");
-    return;
-  }
+  const result = await mechanicLogin(email, password);
 
-  try {
-  const response = await fetch(
-    "https://autoalert-auth-service-auaqa5gfadgaccee.eastus-01.azurewebsites.net/api/auth/login",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    }
-  );
+  if (result.success) {
+    Alert.alert("Success", "Logged in successfully!");
+    // await AsyncStorage.setItem("token", result.token);
 
-  const data = await response.json();
-  console.log("Status:", response.status);
-  console.log("Response data:", data);
-
-  if (response.ok) {
-    const userRole = data.user?.role; // 👈 Check role from response
-
-    if (userRole === "mechanic") {
-      Alert.alert("Success", "Logged in successfully!");
-      
-      // Save token if needed
-      // await AsyncStorage.setItem("token", data.token);
-
-      setTimeout(() => {
-        router.replace("/views/mechanic/(tabs)");
-      }, 500);
-    } else {
-      Alert.alert("Access Denied", "Only mechanics are allowed to log in.");
-    }
+    setTimeout(() => {
+      router.replace("/views/mechanic/(tabs)");
+    }, 500);
   } else {
-    Alert.alert("Error", data.message || "Invalid credentials.");
+    Alert.alert("Error", result.message);
   }
-} catch (error) {
-  console.error("Login error:", error);
-  Alert.alert("Error", "Something went wrong. Please try again later.");
-}
-
 };
+
+  
 
 
   return (
