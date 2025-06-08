@@ -51,7 +51,10 @@ export default function SignUpStep1() {
 
   const handleNext = () => {
     if (validateInputs()) {
-      router.push("/views/mechanic/sign_up_step2");
+      router.push({
+      pathname: "/views/mechanic/sign_up_step2",
+      params: { firstName, lastName, email, password },
+    });
     }
   };
 
