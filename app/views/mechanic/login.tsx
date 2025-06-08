@@ -45,7 +45,7 @@ export default function MechanicLogin() {
   if (response.ok) {
     const userRole = data.user?.role; // 👈 Check role from response
 
-    if (userRole === "") {
+    if (userRole === "mechanic") {
       Alert.alert("Success", "Logged in successfully!");
       
       // Save token if needed
