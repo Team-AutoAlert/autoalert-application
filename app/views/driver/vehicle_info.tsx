@@ -1,7 +1,8 @@
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { VEHICLE_BRANDS } from "../../constants/vehicle_brands"; // Adjust path as needed
+import { addVehicle } from "../../services/driver/user_service";
 
 const VEHICLE_TYPES = [
   "Car",
@@ -27,6 +28,7 @@ const MANUFACTURE_YEARS = Array.from({ length: 2025 - 1980 + 1 }, (_, i) => (198
 
 export default function VehicleInfo() {
   const router = useRouter();
+  const { email } = useLocalSearchParams();
   const [vehicleType, setVehicleType] = useState("Car");
   const [vehicleTypeDropdown, setVehicleTypeDropdown] = useState(false);
 
@@ -40,6 +42,40 @@ export default function VehicleInfo() {
   const [model, setModel] = useState("");
   const [fuelType, setFuelType] = useState("Petrol");
   const [fuelTypeDropdown, setFuelTypeDropdown] = useState(false);
+
+  const handleAddVehicle = async () => {
+    if (!vehicleType || !make || !year || !model || !fuelType || !vehicleNo) {
+      Alert.alert("Error", "Please fill in all vehicle details.");
+      return;
+    }
+
+    if (typeof email !== 'string') {
+      Alert.alert("Error", "User ID is missing.");
+      return;
+    }
+
+    // Generate a simple vehicleId (you might want a more robust solution in a real app)
+    const vehicleId = `VEH-${Date.now()}`;
+
+    const vehicleData = {
+      vehicleId: vehicleNo,
+      brand: make,
+      model: model,
+      fuelType: fuelType,
+      year: parseInt(year),
+      registrationNumber: vehicleNo,
+      // lastServiceDate and nextServiceDue are optional, so we don't include them if not available
+    };
+
+    const result = await addVehicle(email, vehicleData);
+
+    if (result.success) {
+      Alert.alert("Success", result.message);
+      router.replace({ pathname: "/views/driver/home" });
+    } else {
+      Alert.alert("Error", result.message);
+    }
+  };
 
   return (
     <View className="flex-1 justify-center items-center bg-black px-6">
@@ -188,7 +224,7 @@ export default function VehicleInfo() {
 
       {/* Sign Up Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/driver/(tabs)/home")}
+        onPress={handleAddVehicle}
         className="bg-blue-300 w-full py-4 rounded-xl"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">
