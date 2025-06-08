@@ -3,12 +3,14 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useState, useRef } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { register } from "../../services/driver/auth_service";
+import { useAuth } from "../../context/AuthContext";
 
 const LANGUAGES = ["English", "Sinhala", "Tamil"];
 
 export default function ContactInfo() {
   const router = useRouter();
   const { firstName, lastName, email, password } = useLocalSearchParams();
+  const auth = useAuth();
 
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -45,7 +47,11 @@ export default function ContactInfo() {
 
     if (result.success) {
       Alert.alert("Success", result.message);
-      router.replace({ pathname: "/views/driver/mobile_verify", params: { email, phoneNumber } });
+      if (result.token && result.user && result.user.email) {
+        await auth.login(result.user.email, result.token);
+      }
+      // The _layout.tsx will handle the navigation based on AuthContext state change
+      // router.replace({ pathname: "/views/driver/mobile_verify", params: { email, phoneNumber } });
     } else {
       Alert.alert("Error", result.message);
     }
