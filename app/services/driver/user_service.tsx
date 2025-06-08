@@ -31,3 +31,19 @@ export const addVehicle = async (userId: string, vehicleData: {
     return { success: false, message: 'Network error. Please try again.' };
   }
 };
+
+export const fetchUserProfile = async (userId: string) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, user: data.data };
+    } else {
+      return { success: false, message: data.message || 'Failed to fetch user profile' };
+    }
+  } catch (error) {
+    console.error('Fetch user profile API error:', error);
+    return { success: false, message: 'Network error. Please try again.' };
+  }
+};
