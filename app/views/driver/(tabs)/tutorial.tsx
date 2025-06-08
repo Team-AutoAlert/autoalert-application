@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { fetchTutorials } from '../../../services/driver/tutorial_service';
 
@@ -22,6 +22,7 @@ const Tutorial = () => {
   const [tutorials, setTutorials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const getTutorials = async () => {
@@ -47,6 +48,10 @@ const Tutorial = () => {
     }
   };
 
+  const filteredTutorials = tutorials.filter((tutorial: any) =>
+    tutorial.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
@@ -71,9 +76,19 @@ const Tutorial = () => {
     <View style={styles.container}>
       {/* Title */}
       <Text style={styles.title}>Maintain Tutorials</Text>
+
+      {/* Search Input */}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search tutorials..."
+        placeholderTextColor="#999"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
       {/* Scrollable List */}
       <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={true}>
-        {tutorials.length > 0 ? (tutorials.map((item: any) => (
+        {filteredTutorials.length > 0 ? (filteredTutorials.map((item: any) => (
           <TouchableOpacity key={item._id} onPress={() => handleTutorialPress(item)}>
             <View style={styles.tutorialItem}>
               <Image
@@ -87,7 +102,7 @@ const Tutorial = () => {
             </View>
           </TouchableOpacity>
         ))) : (
-          <Text style={styles.noTutorialsText}>No tutorials available.</Text>
+          <Text style={styles.noTutorialsText}>No matching tutorials found.</Text>
         )}
       </ScrollView>
       {/* Back Button */}
@@ -114,6 +129,23 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     marginBottom: 18,
     textAlign: 'center',
+  },
+  searchInput: {
+    width: '90%',
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 18,
+    color: '#333',
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   scrollArea: {
     flex: 1,
