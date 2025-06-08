@@ -62,7 +62,7 @@ export default function MobileVerify() {
 
     if (result.success) {
       Alert.alert("Success", result.message);
-      router.replace("/views/driver/vehicle_info");
+      router.replace({ pathname: "/views/driver/vehicle_info", params: { email } });
     } else {
       Alert.alert("Error", result.message);
     }
