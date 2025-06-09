@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://192.168.178.251:3000/api';
+const API_BASE_URL = 'http://192.168.15.251:3000/api';
 
 export const fetchTutorials = async () => {
   try {
