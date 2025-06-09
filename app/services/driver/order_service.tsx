@@ -36,6 +36,36 @@ interface SOSAlertResponse {
   message: string;
 }
 
+interface NearbyMechanic {
+  location: {
+    type: string;
+    coordinates: [number, number];
+  };
+  _id: string;
+  userId: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  profilePicture: string | null;
+  status: string;
+  address: string;
+  language: string;
+  createdAt: string;
+  updatedAt: string;
+  distance: {
+    meters: number;
+    kilometers: string;
+  };
+}
+
+interface NearbyMechanicsResponse {
+  success: boolean;
+  data: NearbyMechanic[];
+  message: string;
+}
+
 export const createSOSAlert = async (
   breakdownDetails: string,
   driverId: string,
@@ -66,6 +96,27 @@ export const createSOSAlert = async (
     return data;
   } catch (error) {
     console.error('Error creating SOS alert:', error);
+    throw error;
+  }
+};
+
+export const getNearbyMechanics = async (userId: string): Promise<NearbyMechanicsResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/nearby-mechanics/list/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: NearbyMechanicsResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching nearby mechanics:', error);
     throw error;
   }
 };
