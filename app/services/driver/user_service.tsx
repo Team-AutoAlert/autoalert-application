@@ -63,3 +63,31 @@ export const fetchFullUserProfile = async (userId: string) => {
     return { success: false, message: 'Network error. Please try again.' };
   }
 };
+
+export const updateUserLocation = async (userId: string, coordinates: [number, number]) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        location: {
+          type: 'Point',
+          coordinates: coordinates
+        }
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, data: data.data };
+    } else {
+      return { success: false, message: data.message || 'Failed to update location' };
+    }
+  } catch (error) {
+    console.error('Update location API error:', error);
+    return { success: false, message: 'Network error. Please try again.' };
+  }
+};
