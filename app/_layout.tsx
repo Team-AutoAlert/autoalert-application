@@ -2,6 +2,7 @@ import { Stack, router } from "expo-router";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { useEffect } from "react";
 import { View, ActivityIndicator } from "react-native";
+import { registerForPushNotificationsAsync, setupNotificationListeners } from './services/notification_service';
 
 function InitialLayout() {
   const { userId, isLoading } = useAuth();
@@ -16,6 +17,21 @@ function InitialLayout() {
       }
     }
   }, [userId, isLoading]);
+
+  useEffect(() => {
+    // Register for push notifications and log the token
+    const getToken = async () => {
+      const token = await registerForPushNotificationsAsync();
+      console.log('FCM Token in Layout:', token);
+    };
+    getToken();
+
+    // Set up notification listeners
+    const cleanup = setupNotificationListeners();
+
+    // Cleanup listeners on unmount
+    return cleanup;
+  }, []);
 
   if (isLoading) {
     return (
