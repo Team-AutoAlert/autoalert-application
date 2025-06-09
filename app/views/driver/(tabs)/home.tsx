@@ -1,15 +1,55 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAuth } from '../../../context/AuthContext';
+import { createSOSAlert } from '../../../services/driver/order_service';
 
 const Home = () => {
-  const { userProfile } = useAuth();
+  const { userProfile, userId } = useAuth();
+  const [breakdownDetails, setBreakdownDetails] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const vehicle = userProfile?.driverDetails?.vehicles?.[0] || null;
   const vehicleDisplay = vehicle ? `${vehicle.brand} ${vehicle.model}` : 'N/A';
   const vehicleRegistrationNumber = vehicle?.registrationNumber || 'N/A';
+
+  const handleSOSPress = async () => {
+    if (!breakdownDetails.trim()) {
+      Alert.alert('Error', 'Please describe your problem before sending SOS');
+      return;
+    }
+
+    if (!userId) {
+      Alert.alert('Error', 'User ID not found. Please try logging in again.');
+      return;
+    }
+
+    if (vehicleRegistrationNumber === 'N/A') {
+      Alert.alert('Error', 'Vehicle registration number not found. Please update your vehicle information.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await createSOSAlert(breakdownDetails, userId, vehicleRegistrationNumber);
+      
+      if (response.success) {
+        // Navigate to loading screen with the alert ID
+        router.push({
+          pathname: '../../driver/call/loading',
+          params: { alertId: response.data._id }
+        });
+      } else {
+        Alert.alert('Error', response.message || 'Failed to create SOS alert');
+      }
+    } catch (error) {
+      console.error('SOS Alert Error:', error);
+      Alert.alert('Error', 'Failed to create SOS alert. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -32,8 +72,12 @@ const Home = () => {
             source={{ uri: 'https://img.icons8.com/ios-filled/100/000000/marker.png' }}
             style={styles.mapImage}
           />
-          <TouchableOpacity style={styles.sosButton}>
-            <Text style={styles.sosButtonText}>SOS</Text>
+          <TouchableOpacity 
+            style={[styles.sosButton, isLoading && styles.sosButtonDisabled]}
+            onPress={handleSOSPress}
+            disabled={isLoading}
+          >
+            <Text style={styles.sosButtonText}>{isLoading ? 'Sending...' : 'SOS'}</Text>
           </TouchableOpacity>
           <Image
             source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/worker-male.png' }}
@@ -56,6 +100,9 @@ const Home = () => {
           style={styles.problemInput}
           placeholder="What's the problem you are facing?"
           placeholderTextColor="#b0b0b0"
+          value={breakdownDetails}
+          onChangeText={setBreakdownDetails}
+          multiline
         />
       </View>
 
@@ -64,8 +111,12 @@ const Home = () => {
         <TouchableOpacity style={styles.nearbyButton}>
           <Text style={styles.nearbyButtonText}>Nearby Mechanics</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.sosMainButton} onPress={() => router.push('../../driver/call/loading')}>
-          <Text style={styles.sosMainButtonText}>SOS</Text>
+        <TouchableOpacity 
+          style={[styles.sosMainButton, isLoading && styles.sosButtonDisabled]}
+          onPress={handleSOSPress}
+          disabled={isLoading}
+        >
+          <Text style={styles.sosMainButtonText}>{isLoading ? 'Sending...' : 'SOS'}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -145,6 +196,10 @@ const styles = StyleSheet.create({
     left: 70,
     elevation: 3,
   },
+  sosButtonDisabled: {
+    backgroundColor: '#ffb3b3',
+    opacity: 0.7,
+  },
   sosButtonText: {
     color: '#fff',
     fontWeight: 'bold',
@@ -195,6 +250,8 @@ const styles = StyleSheet.create({
     color: '#222',
     borderWidth: 1,
     borderColor: '#e0e0e0',
+    minHeight: 100,
+    textAlignVertical: 'top',
   },
   actionButtons: {
     flexDirection: 'row',
