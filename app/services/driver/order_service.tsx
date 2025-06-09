@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://192.168.15.251:3007/api';
 
 interface SOSAlertRequest {
   driverId: string;
-  vehicleId: string;
+  registrationNumber: string;
   communicationMode: 'audio' | 'video';
   breakdownDetails: string;
 }
@@ -13,7 +13,7 @@ interface SOSAlertResponse {
   success: boolean;
   data: {
     driverId: string;
-    vehicleId: string;
+    registrationNumber: string;
     status: string;
     communicationMode: string;
     breakdownDetails: string;
@@ -93,16 +93,28 @@ interface HireMechanicResponse {
   message: string;
 }
 
+interface HireRequestStatusResponse {
+  success: boolean;
+  data: {
+    requestId: string;
+    status: string;
+    mechanic: {
+      mechanicId: string;
+      coordinates: [number, number];
+    };
+  };
+}
+
 export const createSOSAlert = async (
   breakdownDetails: string,
   driverId: string,
-  vehicleId: string,
+  registrationNumber: string,
   communicationMode: 'audio' | 'video' = 'audio'
 ): Promise<SOSAlertResponse> => {
   try {
     const requestBody: SOSAlertRequest = {
       driverId,
-      vehicleId,
+      registrationNumber,
       communicationMode,
       breakdownDetails,
     };
@@ -177,6 +189,27 @@ export const hireMechanic = async (
     return data;
   } catch (error) {
     console.error('Error hiring mechanic:', error);
+    throw error;
+  }
+};
+
+export const checkHireRequestStatus = async (requestId: string): Promise<HireRequestStatusResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/nearby-mechanics/requests/status/${requestId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: HireRequestStatusResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error checking hire request status:', error);
     throw error;
   }
 };
