@@ -1,82 +1,82 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  StyleSheet,
-  Dimensions,
+  View, Text, ScrollView, TouchableOpacity, Modal,
+  StyleSheet, Dimensions, Alert
 } from 'react-native'
-//import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
-import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons"
+import { viewJobNotifications, acceptJobNotification } from '../../services/mechanic/order_service' // adjust path
 
-const jobs = [
-  {
-    id: 1,
-    distance: '100m',
-    vehicle: 'Honda Grace',
-    problemType: 'Engine',
-    problem: 'Engine Overheat',
-  },
-  {
-    id: 2,
-    distance: '150m',
-    vehicle: 'Toyota Aqua',
-    problemType: 'Battery',
-    problem: 'Battery Dead',
-  },
-  {
-    id: 3,
-    distance: '200m',
-    vehicle: 'Suzuki Wagon R',
-    problemType: 'Flat Tyre',
-    problem: 'Front tyre punctured',
-  },
-  {
-    id: 4,
-    distance: '200m',
-    vehicle: 'Suzuki Wagon R',
-    problemType: 'Flat Tyre',
-    problem: 'Front tyre punctured',
-  },
-]
+const mechanicId = 'mechanic002' // Ideally fetched from auth context
 
 const JobNotifications = () => {
   const [modalVisible, setModalVisible] = useState(false)
-  const [selectedJob, setSelectedJob] = useState(null)
+  const [selectedJob, setSelectedJob] = useState<any>(null)
+  const [jobs, setJobs] = useState<any[]>([])
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await viewJobNotifications(mechanicId)
+        if (res.success) {
+          setJobs(res.data)
+        }
+      } catch (err) {
+        Alert.alert('Error', 'Could not fetch job notifications.')
+      }
+    }
+
+    fetchJobs()
+  }, [])
 
   const handleJobClick = (job: any) => {
     setSelectedJob(job)
     setModalVisible(true)
   }
 
-  const handleAccept = () => {
-    setModalVisible(false)
-    router.push('/views/mechanic/locate_driver')
+  const handleAccept = async () => {
+  try {
+    const response = await acceptJobNotification(selectedJob._id, mechanicId);
+    if (response.success) {
+      Alert.alert('Success', 'Job Accepted');
+      setModalVisible(false);
+      const [longitude, latitude] = selectedJob.driverLocation.coordinates;
+      router.push({
+        pathname: '/views/mechanic/locate_driver',
+        params: {
+          lat: latitude.toString(),
+          lng: longitude.toString(),
+        },
+      });
+    } else {
+      Alert.alert('Error', 'Job acceptance failed.');
+    }
+  } catch (err) {
+    Alert.alert('Error', 'Failed to accept job');
   }
+};
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>🔔 Job Notifications</Text>
       <ScrollView style={styles.scroll}>
         {jobs.map((job) => (
-          <TouchableOpacity key={job.id} style={styles.card} onPress={() => handleJobClick(job)}>
+          <TouchableOpacity key={job._id} style={styles.card} onPress={() => handleJobClick(job)}>
             <View style={styles.cardHeader}>
               <FontAwesome5 name="car-side" size={24} color="#1e88e5" />
-              <Text style={styles.vehicle}>{job.vehicle}</Text>
-              <Text style={styles.distance}>{job.distance}</Text>
+              <Text style={styles.vehicle}>Vehicle ID: {job.vehicleId}</Text>
+              <Text style={styles.distance}>Driver: {job.driverId}</Text>
             </View>
             <View style={styles.tagContainer}>
-              <Text style={[styles.tag, getTagColor(job.problemType)]}>{job.problemType}</Text>
-              <Text style={styles.problem}>{job.problem}</Text>
+              <Text style={[styles.tag, { backgroundColor: '#e53935' }]}>Problem</Text>
+              <Text style={styles.problem}>{job.breakdownDetails}</Text>
             </View>
-            <TouchableOpacity style={styles.acceptBtn} onPress={handleAccept}>
-              <Text style={styles.acceptText}>Accept</Text>
+            <TouchableOpacity style={styles.acceptBtn} onPress={() => handleJobClick(job)}>
+              <Text style={styles.acceptText}>View</Text>
             </TouchableOpacity>
           </TouchableOpacity>
         ))}
@@ -89,10 +89,9 @@ const JobNotifications = () => {
             {selectedJob && (
               <>
                 <Text style={styles.modalTitle}>Job Details</Text>
-                <Text style={styles.modalItem}>🚗 Vehicle: {selectedJob.vehicle}</Text>
-                <Text style={styles.modalItem}>📍 Distance: {selectedJob.distance}</Text>
-                <Text style={styles.modalItem}>🛠️ Problem Type: {selectedJob.problemType}</Text>
-                <Text style={styles.modalItem}>📄 Problem: {selectedJob.problem}</Text>
+                <Text style={styles.modalItem}>🚗 Vehicle ID: {selectedJob.vehicleId}</Text>
+                <Text style={styles.modalItem}>👤 Driver ID: {selectedJob.driverId}</Text>
+                <Text style={styles.modalItem}>📄 Problem: {selectedJob.breakdownDetails}</Text>
               </>
             )}
             <View style={styles.modalActions}>
@@ -109,23 +108,8 @@ const JobNotifications = () => {
           </View>
         </View>
       </Modal>
-
-      
     </View>
   )
-}
-
-const getTagColor = (type: string) => {
-  switch (type.toLowerCase()) {
-    case 'engine':
-      return { backgroundColor: '#e53935' }
-    case 'battery':
-      return { backgroundColor: '#ffb300' }
-    case 'flat tyre':
-      return { backgroundColor: '#43a047' }
-    default:
-      return { backgroundColor: '#607d8b' }
-  }
 }
 
 export default JobNotifications
