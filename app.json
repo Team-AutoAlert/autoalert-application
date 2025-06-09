@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "application",
-    "slug": "application",
+    "slug": "auto-alert",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -37,6 +37,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9f5b415d-059b-4713-b9a1-b8453a0da10b"
+      }
+    },
+    "owner": "kjmaruti60"
   }
 }
