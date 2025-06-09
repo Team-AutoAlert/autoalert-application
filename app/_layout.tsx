@@ -9,7 +9,8 @@ function InitialLayout() {
   useEffect(() => {
     if (!isLoading) {
       if (!userId) {
-        router.replace('/views/driver/driver_login');
+        // Redirect to index page instead of driver_login
+        router.replace('/');
       } else {
         // Redirect to home if already logged in and navigating to root
         router.replace('/views/driver/home');
@@ -26,6 +27,12 @@ function InitialLayout() {
   }
 
   return <Stack>
+    <Stack.Screen 
+      name="index"
+      options={{
+        headerShown: false
+      }}
+    />
     <Stack.Screen 
       name="views/driver/(tabs)" 
       options={{ 
