@@ -39,3 +39,6 @@ app-example
 
 #lock file
 package-lock.json
+
+#firebase
+firebase.config.ts
