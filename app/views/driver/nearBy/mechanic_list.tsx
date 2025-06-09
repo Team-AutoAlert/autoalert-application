@@ -65,7 +65,7 @@ export default function MechanicListScreen() {
           pathname: './loading',
           params: {
             mechanicId: mechanicId, // Pass the mechanic's userId
-            orderId: response.data._id,
+            hireRequestId: response.data._id, // Changed from orderId to hireRequestId
             userId: userId // Pass the driver's userId
           }
         });
