@@ -156,6 +156,32 @@ const Home = () => {
     }
   };
 
+  const handleNearbyMechanics = () => {
+    if (!userId) {
+      Alert.alert('Error', 'User ID not found. Please try logging in again.');
+      return;
+    }
+
+    if (vehicleRegistrationNumber === 'N/A') {
+      Alert.alert('Error', 'Vehicle registration number not found. Please update your vehicle information.');
+      return;
+    }
+
+    if (!breakdownDetails.trim()) {
+      Alert.alert('Error', 'Please describe your problem before searching for mechanics.');
+      return;
+    }
+
+    router.push({
+      pathname: '/views/driver/nearBy/mechanic_list',
+      params: {
+        userId,
+        vehicleRegistrationNumber,
+        problemDescription: breakdownDetails
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -229,7 +255,10 @@ const Home = () => {
 
       {/* Action Buttons */}
       <View style={styles.actionButtons}>
-        <TouchableOpacity style={styles.nearbyButton}>
+        <TouchableOpacity 
+          style={styles.nearbyButton}
+          onPress={handleNearbyMechanics}
+        >
           <Text style={styles.nearbyButtonText}>Nearby Mechanics</Text>
         </TouchableOpacity>
         <TouchableOpacity 
