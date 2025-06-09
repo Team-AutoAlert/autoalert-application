@@ -1,18 +1,123 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Platform } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useAuth } from '../../../context/AuthContext';
 import { createSOSAlert } from '../../../services/driver/order_service';
+import { updateUserLocation } from '../../../services/driver/user_service';
+import * as Location from 'expo-location';
 
 const Home = () => {
   const { userProfile, userId } = useAuth();
   const [breakdownDetails, setBreakdownDetails] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const vehicle = userProfile?.driverDetails?.vehicles?.[0] || null;
   const vehicleDisplay = vehicle ? `${vehicle.brand} ${vehicle.model}` : 'N/A';
   const vehicleRegistrationNumber = vehicle?.registrationNumber || 'N/A';
+
+  const checkLocationServices = async () => {
+    try {
+      const serviceEnabled = await Location.hasServicesEnabledAsync();
+      if (!serviceEnabled) {
+        setLocationError('Location services are disabled. Please enable location services in your device settings.');
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Error checking location services:', error);
+      setLocationError('Unable to check location services status.');
+      return false;
+    }
+  };
+
+  const requestLocationPermission = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setLocationError('Location permission is required for this app to work properly.');
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Error requesting location permission:', error);
+      setLocationError('Unable to request location permission.');
+      return false;
+    }
+  };
+
+  const getCurrentLocation = async () => {
+    try {
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      return currentLocation;
+    } catch (error) {
+      console.error('Error getting current location:', error);
+      setLocationError('Unable to get your current location. Please check your location settings and try again.');
+      return null;
+    }
+  };
+
+  const updateLocationInBackend = async (coordinates: [number, number]) => {
+    try {
+      const response = await updateUserLocation(userId!, coordinates);
+      if (!response.success) {
+        console.error('Failed to update location:', response.message);
+        setLocationError('Location updated but failed to sync with server.');
+      }
+    } catch (error) {
+      console.error('Error updating location in backend:', error);
+      setLocationError('Failed to sync location with server.');
+    }
+  };
+
+  const initializeLocation = useCallback(async () => {
+    try {
+      // Check if location services are enabled
+      const servicesEnabled = await checkLocationServices();
+      if (!servicesEnabled) return;
+
+      // Request location permission
+      const permissionGranted = await requestLocationPermission();
+      if (!permissionGranted) return;
+
+      // Get current location
+      const currentLocation = await getCurrentLocation();
+      if (!currentLocation) return;
+
+      setLocation(currentLocation);
+      setLocationError(null);
+
+      // Update location in backend
+      const coordinates: [number, number] = [
+        currentLocation.coords.longitude,
+        currentLocation.coords.latitude
+      ];
+      await updateLocationInBackend(coordinates);
+    } catch (error) {
+      console.error('Location initialization error:', error);
+      setLocationError('An unexpected error occurred while getting your location.');
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const setupLocation = async () => {
+      if (isMounted) {
+        await initializeLocation();
+      }
+    };
+
+    setupLocation();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [initializeLocation]);
 
   const handleSOSPress = async () => {
     if (!breakdownDetails.trim()) {
@@ -59,6 +164,22 @@ const Home = () => {
         <Text style={styles.headerTitle}>AUTO ALERT</Text>
         <Ionicons name="log-out-outline" size={28} color="#222" />
       </View>
+
+      {/* Location Error Message */}
+      {locationError && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{locationError}</Text>
+          <TouchableOpacity 
+            style={styles.retryButton}
+            onPress={() => {
+              setLocationError(null);
+              initializeLocation();
+            }}
+          >
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Map/Mechanic/SOS Section */}
       <View style={styles.mapSection}>
@@ -287,5 +408,31 @@ const styles = StyleSheet.create({
     color: '#e53935',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  errorContainer: {
+    backgroundColor: '#ffebee',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: '#c62828',
+    fontSize: 14,
+    flex: 1,
+    marginRight: 8,
+  },
+  retryButton: {
+    backgroundColor: '#c62828',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
