@@ -1,8 +1,8 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Image, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { getNearbyMechanics } from '../../../services/driver/order_service';
+import { getNearbyMechanics, hireMechanic } from '../../../services/driver/order_service';
 
 interface Mechanic {
   _id: string;
@@ -14,6 +14,7 @@ interface Mechanic {
   };
   status: string;
   profilePicture: string | null;
+  userId: string;
 }
 
 export default function MechanicListScreen() {
@@ -48,18 +49,33 @@ export default function MechanicListScreen() {
     }
   };
 
-  const handleHire = (mechanicId: string) => {
-    console.log('Hiring mechanic:', mechanicId);
-    // TODO: Implement hire logic with the stored problem description and vehicle info
-    router.push({
-      pathname: '../hire',
-      params: {
-        mechanicId,
-        problemDescription,
-        vehicleRegistrationNumber,
-        userId
+  const handleHire = async (mechanicId: string) => {
+    try {
+      console.log('Hiring mechanic with ID:', mechanicId); // Debug log
+      const response = await hireMechanic(
+        mechanicId, // This is the mechanic's userId from the list
+        userId as string,
+        vehicleRegistrationNumber as string,
+        problemDescription as string
+      );
+
+      if (response.success) {
+        console.log('Hire request successful, navigating to loading screen'); // Debug log
+        router.push({
+          pathname: './loading',
+          params: {
+            mechanicId: mechanicId, // Pass the mechanic's userId
+            orderId: response.data._id,
+            userId: userId // Pass the driver's userId
+          }
+        });
+      } else {
+        Alert.alert('Error', 'Failed to send hire request. Please try again.');
       }
-    });
+    } catch (error) {
+      console.error('Error hiring mechanic:', error);
+      Alert.alert('Error', 'Failed to send hire request. Please try again.');
+    }
   };
 
   const handleBack = () => {
@@ -134,10 +150,14 @@ export default function MechanicListScreen() {
                   styles.hireButton,
                   mechanic.status !== 'active' && styles.hireButtonDisabled
                 ]} 
-                onPress={() => handleHire(mechanic._id)}
+                onPress={() => handleHire(mechanic.userId)}
                 disabled={mechanic.status !== 'active'}
+                activeOpacity={0.7}
               >
-                <Text style={styles.hireButtonText}>Hire</Text>
+                <Text style={[
+                  styles.hireButtonText,
+                  mechanic.status !== 'active' && styles.hireButtonTextDisabled
+                ]}>Hire</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.separator} />
@@ -211,18 +231,25 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
   hireButton: {
-    backgroundColor: '#a0c4ff', // Light blue background
+    backgroundColor: '#e53935',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#007bff', // Blue border
+    borderColor: '#e53935',
   },
   hireButtonText: {
     fontSize: 16,
-    color: '#212529', // Dark text
+    color: '#fff',
     fontFamily: 'monospace',
     fontWeight: 'bold',
+  },
+  hireButtonDisabled: {
+    backgroundColor: '#ccc',
+    borderColor: '#999',
+  },
+  hireButtonTextDisabled: {
+    color: '#666',
   },
   separator: {
     height: 1,
@@ -306,10 +333,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     fontFamily: 'monospace',
-  },
-  hireButtonDisabled: {
-    backgroundColor: '#ccc',
-    borderColor: '#999',
   },
   mechanicImage: {
     width: '100%',

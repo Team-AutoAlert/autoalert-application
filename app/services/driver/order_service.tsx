@@ -66,6 +66,33 @@ interface NearbyMechanicsResponse {
   message: string;
 }
 
+interface HireMechanicRequest {
+  driverId: string;
+  registrationNumber: string;
+  breakdownDetails: string;
+}
+
+interface HireMechanicResponse {
+  success: boolean;
+  data: {
+    driverId: string;
+    mechanicId: string;
+    status: string;
+    driverLocation: {
+      type: string;
+      coordinates: [number, number];
+    };
+    registrationNumber: string;
+    breakdownDetails: string;
+    totalAmount: number;
+    _id: string;
+    services: any[];
+    createdAt: string;
+    updatedAt: string;
+  };
+  message: string;
+}
+
 export const createSOSAlert = async (
   breakdownDetails: string,
   driverId: string,
@@ -117,6 +144,39 @@ export const getNearbyMechanics = async (userId: string): Promise<NearbyMechanic
     return data;
   } catch (error) {
     console.error('Error fetching nearby mechanics:', error);
+    throw error;
+  }
+};
+
+export const hireMechanic = async (
+  mechanicId: string,
+  driverId: string,
+  registrationNumber: string,
+  breakdownDetails: string
+): Promise<HireMechanicResponse> => {
+  try {
+    const requestBody: HireMechanicRequest = {
+      driverId,
+      registrationNumber,
+      breakdownDetails,
+    };
+
+    const response = await fetch(`${API_BASE_URL}/nearby-mechanics/hire/${mechanicId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: HireMechanicResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error hiring mechanic:', error);
     throw error;
   }
 };
