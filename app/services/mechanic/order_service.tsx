@@ -63,3 +63,25 @@ export const acceptSOSAlert = async (alertId: string, mechanicId: string): Promi
     return false;
   }
 };
+
+
+export const completeSOSAlert = async (alertId: string, callDuration: string) => {
+  try {
+    const response = await fetch(`${BASE_URL}/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ alertId, callDuration }),
+    });
+    const json = await response.json();
+    if (!response.ok) {
+      console.warn('Failed to complete alert:', json.message);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Failed to complete alert:', error);
+    return false;
+  }
+  
+};
