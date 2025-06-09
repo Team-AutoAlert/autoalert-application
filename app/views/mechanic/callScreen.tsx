@@ -49,7 +49,7 @@ const CallScreen = () => {
         [
           {
             text: 'OK',
-            onPress: () => router.push('/views/mechanic/sos_alerts'),
+            onPress: () => router.push('/views/mechanic/(tabs)/sos_alerts'),
           },
         ]
       );
