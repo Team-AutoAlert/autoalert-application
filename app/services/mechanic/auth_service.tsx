@@ -66,3 +66,49 @@ export const register = async (userData: {
     return { success: false, message: 'Network error. Please try again.' };
   }
 };
+
+export const verifyPhone = async (userId: string, code: string) => {
+  try {
+    const response = await fetch("http://192.168.8.167:3002/api/auth/verify-phone", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, code }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, message: data.message, data: data.data };
+    } else {
+      return { success: false, message: data.message || 'Phone verification failed' };
+    }
+  } catch (error) {
+    console.error('Phone verification API error:', error);
+    return { success: false, message: 'Network error. Please try again.' };
+  }
+};
+
+export const resendCode = async (userId: string) => {
+  try {
+    const response = await fetch("http://192.168.8.167:3002/api/auth/resend-code", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      return { success: true, message: data.message };
+    } else {
+      return { success: false, message: data.message || 'Failed to resend code' };
+    }
+  } catch (error) {
+    console.error('Resend code API error:', error);
+    return { success: false, message: 'Network error. Please try again.' };
+  }
+};
