@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { mechanicLogin } from "../../services/mechanic/auth_service";
 import {
   View,
   Text,
@@ -17,21 +18,23 @@ export default function MechanicLogin() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in both fields.");
-      return;
-    }
+  const handleLogin = async () => {
+  const result = await mechanicLogin(email, password);
 
-    if (email === "mechanic@example.com" && password === "password123") {
-      Alert.alert("Success", "Logged in successfully!");
-      setTimeout(() => {
-        router.replace("/views/mechanic/(tabs)");
-      }, 500);
-    } else {
-      Alert.alert("Error", "Invalid credentials.");
-    }
-  };
+  if (result.success) {
+    Alert.alert("Success", "Logged in successfully!");
+    // await AsyncStorage.setItem("token", result.token);
+
+    setTimeout(() => {
+      router.replace("/views/mechanic/(tabs)");
+    }, 500);
+  } else {
+    Alert.alert("Error", result.message);
+  }
+};
+
+  
+
 
   return (
     <KeyboardAvoidingView

@@ -7,12 +7,15 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Alert
 } from "react-native";
 import { Picker } from "@react-native-picker/picker"; // Install this if you haven't
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { register } from "../../services/mechanic/auth_service";
 
 export default function SignUpStep2() {
   const router = useRouter();
+  const { firstName, lastName, email, password } = useLocalSearchParams();
 
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -35,9 +38,33 @@ export default function SignUpStep2() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateInputs()) {
-      router.push("/views/mechanic/verify_phone");
+
+  const handleNext = async () => {
+    if (!address || !phoneNumber) {
+      Alert.alert("Error", "Please fill in all contact details.");
+      return;
+    }
+
+    if (typeof email !== 'string' || typeof password !== 'string' || typeof firstName !== 'string' || typeof lastName !== 'string') {
+      Alert.alert("Error", "User data is missing.");
+      return;
+    }
+
+    const userData = {
+      email: email as string,
+      password: password as string,
+      firstName: firstName as string,
+      lastName: lastName as string,
+      phoneNumber: phoneNumber,
+    };
+
+    const result = await register(userData);
+
+    if (result.success) {
+      Alert.alert("Success", result.message);
+      router.replace({ pathname: "/views/mechanic/verify_phone", params: { email, phoneNumber } });
+    } else {
+      Alert.alert("Error", result.message);
     }
   };
 

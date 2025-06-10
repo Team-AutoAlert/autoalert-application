@@ -13,6 +13,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default function LocateDriverScreen() {
   const router = useRouter();
   const { driverId } = useLocalSearchParams(); // assuming driverId is passed
+  const { lat, lng } = useLocalSearchParams();
   const [mechanicLocation, setMechanicLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [driverLocation, setDriverLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -48,8 +49,8 @@ export default function LocateDriverScreen() {
   useEffect(() => {
     // TODO: Replace this with actual driver location via API
     setDriverLocation({
-      latitude: 7.556, // Replace with real value
-      longitude: 80.625, // Replace with real value
+    latitude: parseFloat(lat as string),
+    longitude: parseFloat(lng as string),
     });
   }, [driverId]);
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
+import { completeSOSAlert } from '../../services/mechanic/order_service';
+
 
 interface AlertType {
   id: number;
@@ -40,8 +42,11 @@ const CallScreen = () => {
     return `${mins}:${secs}`;
   };
 
-  const endCall = () => {
-    setCallEnded(true);
+  const endCall = async () => {
+  setCallEnded(true);
+
+  try {
+    await completeSOSAlert(String(params.id), (callDuration / 60).toFixed(1)); // Convert to minutes
     setTimeout(() => {
       Alert.alert(
         'Call Ended',
@@ -49,12 +54,16 @@ const CallScreen = () => {
         [
           {
             text: 'OK',
-            onPress: () => router.push('/views/mechanic/sos_alerts'),
+            onPress: () => router.push('/views/mechanic/(tabs)/sos_alerts'),
           },
         ]
       );
     }, 1500);
-  };
+  } catch (error) {
+    Alert.alert('Error', 'Failed to complete the SOS alert. Please try again.');
+  }
+};
+
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F4F6F8', padding: 20 }}>
