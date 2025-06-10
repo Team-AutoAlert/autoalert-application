@@ -56,12 +56,18 @@ export default function LocateDriverScreen() {
 
   // Watch for arrival condition
   useEffect(() => {
-    if (driverLocation && mechanicLocation) {
-      if (areLocationsEqual(driverLocation, mechanicLocation)) {
-        router.replace('/views/mechanic/job_complete'); // Change to your screen
-      }
+  if (driverLocation && mechanicLocation) {
+    if (areLocationsEqual(driverLocation, mechanicLocation)) {
+      router.replace('/views/mechanic/job_complete');
+    } else {
+      const timeout = setTimeout(() => {
+        router.replace('/views/mechanic/job_complete');
+      }, 50000); // 50 seconds
+
+      return () => clearTimeout(timeout); // cleanup on location change
     }
-  }, [driverLocation, mechanicLocation]);
+  }
+}, [driverLocation, mechanicLocation]);
 
   const initialRegion = {
     latitude: mechanicLocation?.latitude || 7.556,

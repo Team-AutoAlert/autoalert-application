@@ -19,7 +19,7 @@ export interface Alert {
   vehicle: any;
 }
 
-const BASE_URL = 'http://192.168.8.167:3007';
+const BASE_URL = 'http://172.19.23.194:3007';
 
 /**
  * Fetches all active SOS alerts from the server.

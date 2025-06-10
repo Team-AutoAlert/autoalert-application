@@ -9,7 +9,7 @@ import { useRouter } from 'expo-router'
 import { FontAwesome5 } from "@expo/vector-icons"
 import { viewJobNotifications, acceptJobNotification } from '../../services/mechanic/order_service' // adjust path
 
-const mechanicId = 'mechanic002' // Ideally fetched from auth context
+const mechanicId = 'kkrmadhu1999@gmail.com' // Ideally fetched from auth context
 
 const JobNotifications = () => {
   const [modalVisible, setModalVisible] = useState(false)

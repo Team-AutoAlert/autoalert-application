@@ -3,7 +3,7 @@
 export const mechanicLogin = async (email: string, password: string) => {
   try {
     const response = await fetch(
-      "http://192.168.8.167:3002/api/auth/login",
+      "http://172.19.23.194:3002/api/auth/login",
       {
         method: "POST",
         headers: {
@@ -38,7 +38,7 @@ export const register = async (userData: {
   phoneNumber: string;
 }) => {
   try {
-    const response = await fetch("http://192.168.8.167:3002/api/auth/register", {
+    const response = await fetch("http://172.19.23.194:3002/api/auth/register", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export const register = async (userData: {
 
 export const verifyPhone = async (userId: string, code: string) => {
   try {
-    const response = await fetch("http://192.168.8.167:3002/api/auth/verify-phone", {
+    const response = await fetch("http://172.19.23.194:3002/api/auth/verify-phone", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export const verifyPhone = async (userId: string, code: string) => {
 
 export const resendCode = async (userId: string) => {
   try {
-    const response = await fetch("http://192.168.8.167:3002/api/auth/resend-code", {
+    const response = await fetch("http://172.19.23.194:3002/api/auth/resend-code", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

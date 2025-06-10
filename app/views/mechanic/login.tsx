@@ -25,9 +25,12 @@ export default function MechanicLogin() {
     Alert.alert("Success", "Logged in successfully!");
     // await AsyncStorage.setItem("token", result.token);
 
-    setTimeout(() => {
-      router.replace("/views/mechanic/(tabs)");
-    }, 500);
+    router.replace({
+      pathname: "/views/mechanic/(tabs)",
+      params: {
+        user: JSON.stringify(result.user), // pass user object as string
+      },
+    });
   } else {
     Alert.alert("Error", result.message);
   }

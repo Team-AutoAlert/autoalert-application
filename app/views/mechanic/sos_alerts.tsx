@@ -35,7 +35,7 @@ const SOSAlerts = () => {
 
 
   const handleAccept = async (alert: Alert) => {
-  const success = await acceptSOSAlert(alert._id, 'mechanic002'); // Replace with actual mechanic ID
+  const success = await acceptSOSAlert(alert._id, 'kkrmadhu1999@gmail.com'); // Replace with actual mechanic ID
   if (success) {
     router.push({
       pathname: '/views/mechanic/callScreen',
