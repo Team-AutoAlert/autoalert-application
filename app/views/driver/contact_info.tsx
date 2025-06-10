@@ -35,25 +35,49 @@ export default function ContactInfo() {
       return;
     }
 
-    const userData = {
-      email: email as string,
-      password: password as string,
-      firstName: firstName as string,
-      lastName: lastName as string,
-      phoneNumber: phoneNumber,
-    };
+    try {
+      const userData = {
+        email: email as string,
+        password: password as string,
+        firstName: firstName as string,
+        lastName: lastName as string,
+        phoneNumber: phoneNumber,
+      };
 
-    const result = await register(userData);
+      console.log('Attempting registration with data:', { ...userData, password: '***' });
+      const result = await register(userData);
+      console.log('Registration result:', result);
 
-    if (result.success) {
-      Alert.alert("Success", result.message);
-      if (result.token && result.user && result.user.email) {
-        await auth.login(result.user.email, result.token);
+      if (result.success) {
+        console.log('Registration successful, proceeding with login');
+        if (result.token && result.user?.data?.user?.email) {
+          console.log('Login data available, proceeding with login');
+          await auth.login(result.user.data.user.email, result.token);
+          console.log('Login successful, navigating to mobile verify');
+          
+          // Navigate to mobile verification page
+          router.push({
+            pathname: "/views/driver/mobile_verify",
+            params: {
+              email: result.user.data.user.email,
+              phoneNumber: result.user.data.user.phoneNumber
+            }
+          });
+        } else {
+          console.log('Login data missing:', {
+            hasToken: !!result.token,
+            hasUser: !!result.user,
+            hasEmail: !!(result.user?.data?.user?.email)
+          });
+          Alert.alert("Error", "Registration successful but login failed. Please try logging in manually.");
+        }
+      } else {
+        console.log('Registration failed:', result.message);
+        Alert.alert("Error", result.message);
       }
-      // The _layout.tsx will handle the navigation based on AuthContext state change
-      // router.replace({ pathname: "/views/driver/mobile_verify", params: { email, phoneNumber } });
-    } else {
-      Alert.alert("Error", result.message);
+    } catch (error) {
+      console.error('Error during registration:', error);
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
     }
   };
 

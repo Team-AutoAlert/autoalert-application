@@ -1,33 +1,149 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { getDriverBills } from '../../../services/driver/payment_service';
+import { format } from 'date-fns';
+import { useAuth } from '../../../context/AuthContext';
 
-const nearbyTransactions = [
-  { id: 1, name: 'Rizan Mohomad', date: '16 oct', time: '13.48', type: 'Call', amount: '10.09' },
-  { id: 2, name: 'Nisal Hettiaya', date: '14 oct', time: '6.48', type: 'Call', amount: '40.09' },
-  { id: 3, name: 'Fayaz Fazul', date: '13 oct', time: '1.44', type: 'Call', amount: '100.02' },
-  { id: 4, name: 'King Charls', date: '12 oct', time: '13.08', type: 'SMS', amount: '1.09' },
-  { id: 5, name: 'Remond Luthar', date: '10 oct', time: '23.48', type: 'Call', amount: '44.22' },
-  { id: 6, name: 'Richard Hamilton', date: '4 oct', time: '09.08', type: 'Call', amount: '66.69' },
-  { id: 7, name: 'Jimmy Hardy', date: '10 sep', time: '21.48', type: 'Call', amount: '44.22' },
-  { id: 8, name: 'David Copperfeild', date: '4 aug', time: '06.33', type: 'Call', amount: '66.69' },
-];
+interface Service {
+  name: string;
+  description: string;
+  charge: number;
+  _id: string;
+}
 
-const sosTransactions = [
-  { id: 1, name: 'Ava Smith', date: '15 oct', time: '11.22', type: 'Call', amount: '20.00' },
-  { id: 2, name: 'Liam Brown', date: '13 oct', time: '15.30', type: 'SMS', amount: '5.50' },
-  { id: 3, name: 'Olivia Wilson', date: '11 oct', time: '17.10', type: 'Call', amount: '30.75' },
-  { id: 4, name: 'Noah Lee', date: '9 oct', time: '19.00', type: 'Call', amount: '12.99' },
-];
+interface PaymentBill {
+  _id: string;
+  alertId?: string;
+  requestId?: string;
+  driverId: string;
+  mechanicId: string;
+  amount: number;
+  orderType: 'sos_alert' | 'nearby_mechanic';
+  status: 'paid' | 'unpaid';
+  callDuration?: number;
+  services: Service[];
+  createdAt: string;
+  __v: number;
+}
 
 const Account = () => {
+  const { userId } = useAuth();
   const [activeTab, setActiveTab] = useState('Nearby');
-  const transactions = activeTab === 'Nearby' ? nearbyTransactions : sosTransactions;
+  const [bills, setBills] = useState<PaymentBill[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (userId) {
+      fetchBills();
+    } else {
+      setError('User not logged in');
+      setLoading(false);
+    }
+  }, [userId]);
+
+  const fetchBills = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
+
+      console.log('Fetching bills for userId:', userId);
+      const response = await getDriverBills(userId);
+      console.log('Bills response:', response);
+
+      if (response.success && response.data) {
+        // Sort bills by createdAt in descending order
+        const sortedBills = response.data.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        console.log('Sorted bills:', sortedBills);
+        setBills(sortedBills);
+      } else {
+        throw new Error(response.message || 'Failed to fetch bills');
+      }
+    } catch (error) {
+      console.error('Error fetching bills:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load bills. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredBills = bills.filter(bill => 
+    activeTab === 'Nearby' ? bill.orderType === 'nearby_mechanic' : bill.orderType === 'sos_alert'
+  );
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, 'dd MMM');
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, 'HH.mm');
+  };
+
+  const renderTransactionList = () => {
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#e53935" />
+          <Text style={styles.loadingText}>Loading transactions...</Text>
+        </View>
+      );
+    }
+
+    if (error) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchBills}>
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (filteredBills.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No transactions found</Text>
+        </View>
+      );
+    }
+
+    return (
+      <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {filteredBills.map((bill) => (
+          <View key={bill._id} style={styles.transactionItem}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.name}>
+                {bill.orderType === 'nearby_mechanic' 
+                  ? bill.services.map(s => s.name).join(', ')
+                  : `SOS Call (${bill.callDuration} min)`}
+              </Text>
+              <View style={styles.row}>
+                <Text style={styles.date}>{formatDate(bill.createdAt)}</Text>
+                <Text style={styles.time}>{formatTime(bill.createdAt)}</Text>
+                <Text style={styles.type}>{bill.orderType === 'nearby_mechanic' ? 'Service' : 'Call'}</Text>
+              </View>
+            </View>
+            <Text style={[styles.amount, bill.status === 'unpaid' && styles.unpaidAmount]}>
+              Rs.{bill.amount.toFixed(2)}
+            </Text>
+          </View>
+        ))}
+      </ScrollView>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      {/* Title */}
       <Text style={styles.title}>Account Activity</Text>
-      {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Nearby' && styles.activeTab]}
@@ -42,22 +158,7 @@ const Account = () => {
           <Text style={[styles.tabText, activeTab === 'SOS' && styles.activeTabText]}>SOS</Text>
         </TouchableOpacity>
       </View>
-      {/* Transaction List */}
-      <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {transactions.map((item) => (
-          <View key={item.id} style={styles.transactionItem}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.name}>{item.name}</Text>
-              <View style={styles.row}>
-                <Text style={styles.date}>{item.date}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-                <Text style={styles.type}>{item.type}</Text>
-              </View>
-            </View>
-            <Text style={styles.amount}>Rs.{item.amount}</Text>
-          </View>
-        ))}
-      </ScrollView>
+      {renderTransactionList()}
     </View>
   );
 };
@@ -163,5 +264,53 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginLeft: 10,
+  },
+  unpaidAmount: {
+    color: '#ff9800',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+    fontFamily: 'monospace',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: '#e53935',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontFamily: 'monospace',
+  },
+  retryButton: {
+    backgroundColor: '#e53935',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'monospace',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    fontFamily: 'monospace',
   },
 });

@@ -7,6 +7,9 @@ import { verifyPhone, resendCode } from "../../services/driver/auth_service";
 export default function MobileVerify() {
   const router = useRouter();
   const { email, phoneNumber } = useLocalSearchParams();
+  
+  console.log('MobileVerify mounted with params:', { email, phoneNumber });
+
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputs = [
     useRef<TextInput>(null),

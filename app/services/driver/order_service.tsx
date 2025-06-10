@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_BASE_URL = 'http://192.168.15.251:3007/api';
+const API_BASE_URL = 'http://172.19.23.148:3007/api';
 
 interface SOSAlertRequest {
   driverId: string;
