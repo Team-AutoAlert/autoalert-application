@@ -1,5 +1,4 @@
-// app/views/mechanic/upload_nic.tsx
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { useRouter } from "expo-router";
@@ -9,10 +8,15 @@ export default function UploadNIC() {
   const router = useRouter();
 
   const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      return Alert.alert("Permission Required", "Please allow access to your gallery.");
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [3, 2],
       quality: 1,
     });
 
@@ -22,26 +26,31 @@ export default function UploadNIC() {
   };
 
   return (
-    <View className="flex-1 items-center justify-center bg-white px-6">
-      <Text className="text-xl font-semibold text-blue-600 mb-6">Upload NIC</Text>
+    <View className="flex-1 bg-white px-6 pt-16">
+      <Text className="text-3xl text-center font-bold text-blue-600 mb-2">Upload Your NIC</Text>
+      <Text className="text-gray-600 text-center mb-6">
+        Please upload a clear image of your National Identity Card (NIC) for verification.
+      </Text>
 
       <TouchableOpacity
         onPress={pickImage}
-        className="w-full h-48 border border-dashed border-gray-400 rounded-lg items-center justify-center bg-gray-100 mb-6"
+        className="w-full h-48 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 mb-6 items-center justify-center"
       >
         {nicImage ? (
-          <Image source={{ uri: nicImage }} className="w-full h-full rounded-lg" />
+          <Image source={{ uri: nicImage }} className="w-full h-full rounded-xl" />
         ) : (
-          <Text className="text-gray-500">Upload Image</Text>
+          <Text className="text-gray-400 font-medium">Tap to Upload NIC Image</Text>
         )}
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={() => router.push("/views/mechanic/select_specialization")}
-        className="bg-blue-600 w-full py-3 rounded-lg"
+        className={`w-full py-4 rounded-xl ${
+          nicImage ? "bg-blue-600" : "bg-blue-300"
+        }`}
         disabled={!nicImage}
       >
-        <Text className="text-white text-center font-medium text-base">Next</Text>
+        <Text className="text-white text-center text-base font-semibold">Next</Text>
       </TouchableOpacity>
     </View>
   );
