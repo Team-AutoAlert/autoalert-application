@@ -71,7 +71,7 @@ export default function SelectSpecialization() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => router.push("/views/mechanic/confirm_details")}
+        onPress={() => router.push("/views/mechanic/success")}
         className={`py-4 rounded-xl ${
           selected.length === 0 || !certificate ? "bg-blue-300" : "bg-blue-600"
         }`}
