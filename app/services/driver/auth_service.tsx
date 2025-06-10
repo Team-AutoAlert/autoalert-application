@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://192.168.15.251:3002/api/auth';
+const API_BASE_URL = 'http://172.19.23.148:3002/api/auth';
 
 export const login = async (email: string, password: string) => {
   try {
