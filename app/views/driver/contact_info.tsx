@@ -1,12 +1,17 @@
 // app/views/mechanic/sign_up_step2.tsx
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useState, useRef } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { register } from "../../services/driver/auth_service";
+import { useAuth } from "../../context/AuthContext";
 
 const LANGUAGES = ["English", "Sinhala", "Tamil"];
 
 export default function ContactInfo() {
   const router = useRouter();
+  const { firstName, lastName, email, password } = useLocalSearchParams();
+  const auth = useAuth();
+
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [language, setLanguage] = useState("English");
@@ -19,9 +24,38 @@ export default function ContactInfo() {
     useRef<TextInput>(null)
   ];
 
-  if (inputs[3].current) {
-    inputs[3].current.focus();
-  }
+  const handleNext = async () => {
+    if (!address || !phoneNumber) {
+      Alert.alert("Error", "Please fill in all contact details.");
+      return;
+    }
+
+    if (typeof email !== 'string' || typeof password !== 'string' || typeof firstName !== 'string' || typeof lastName !== 'string') {
+      Alert.alert("Error", "User data is missing.");
+      return;
+    }
+
+    const userData = {
+      email: email as string,
+      password: password as string,
+      firstName: firstName as string,
+      lastName: lastName as string,
+      phoneNumber: phoneNumber,
+    };
+
+    const result = await register(userData);
+
+    if (result.success) {
+      Alert.alert("Success", result.message);
+      if (result.token && result.user && result.user.email) {
+        await auth.login(result.user.email, result.token);
+      }
+      // The _layout.tsx will handle the navigation based on AuthContext state change
+      // router.replace({ pathname: "/views/driver/mobile_verify", params: { email, phoneNumber } });
+    } else {
+      Alert.alert("Error", result.message);
+    }
+  };
 
   return (
     <View className="flex-1 justify-center items-center bg-black px-6">
@@ -87,7 +121,7 @@ export default function ContactInfo() {
 
       {/* Next Button */}
       <TouchableOpacity
-        onPress={() => router.push("/views/driver/mobile_verify")}
+        onPress={handleNext}
         className="bg-blue-300 w-full py-4 rounded-xl"
       >
         <Text className="text-white text-center text-2xl font-mono font-medium">

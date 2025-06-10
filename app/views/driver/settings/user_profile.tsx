@@ -1,19 +1,64 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-
-const profile = {
-  firstName: 'Jimmy',
-  lastName: 'Cooper',
-  language: 'English',
-  email: 'Cooper@gmail.com',
-  number: '0774323223',
-  address: 'Peradeniya Kandy',
-  emailVerified: true,
-};
+import { useAuth } from '../../../context/AuthContext';
+import { fetchUserProfile } from '../../../services/driver/user_service';
 
 const UserProfile = () => {
   const router = useRouter();
+  const { userId } = useAuth(); // Get userId from AuthContext
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserProfile = async () => {
+      if (!userId) {
+        setError("User ID not found.");
+        setLoading(false);
+        return;
+      }
+
+      const result = await fetchUserProfile(userId);
+      if (result.success) {
+        setUserProfile(result.user);
+      } else {
+        setError(result.message);
+        Alert.alert("Error", result.message);
+      }
+      setLoading(false);
+    };
+
+    getUserProfile();
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#e53935" />
+        <Text style={styles.loadingText}>Loading User Profile...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.errorContainer]}>
+        <Text style={styles.errorText}>Error: {error}</Text>
+        <TouchableOpacity onPress={() => setLoading(true)} style={styles.retryButton}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (!userProfile) {
+    return (
+      <View style={[styles.container, styles.noProfileContainer]}>
+        <Text style={styles.noProfileText}>No user profile found.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -21,21 +66,23 @@ const UserProfile = () => {
       {/* Profile Icon */}
       <View style={styles.avatarContainer}>
         <Image
-          source={{ uri: 'https://img.icons8.com/ios-filled/100/000000/user-male-circle.png' }}
+          source={{ uri: userProfile.profilePicture || 'https://img.icons8.com/ios-filled/100/000000/user-male-circle.png' }}
           style={styles.avatar}
         />
       </View>
       {/* Profile Info Box */}
       <View style={styles.infoBox}>
-        <View style={styles.infoField}><Text style={styles.infoText}>First Name : {profile.firstName}</Text></View>
-        <View style={styles.infoField}><Text style={styles.infoText}>Last Name : {profile.lastName}</Text></View>
-        <View style={styles.infoField}><Text style={styles.infoText}>Language : {profile.language}</Text></View>
+        <View style={styles.infoField}><Text style={styles.infoText}>First Name : {userProfile.firstName}</Text></View>
+        <View style={styles.infoField}><Text style={styles.infoText}>Last Name : {userProfile.lastName}</Text></View>
+        {/* Assuming language is part of userProfile or can be inferred, for now, static */}
+        <View style={styles.infoField}><Text style={styles.infoText}>Language : {userProfile.language || 'English'}</Text></View>
         <View style={styles.infoField}>
-          <Text style={styles.infoText}>Email : {profile.email}</Text>
-          {profile.emailVerified && <Text style={styles.verified}>Verified</Text>}
+          <Text style={styles.infoText}>Email : {userProfile.email}</Text>
+          {/* Assuming emailVerified status from backend response if available */}
+          {userProfile.status === 'active' && <Text style={styles.verified}>Verified</Text>}
         </View>
-        <View style={styles.infoField}><Text style={styles.infoText}>Number : {profile.number}</Text></View>
-        <View style={styles.infoField}><Text style={styles.infoText}>Address : {profile.address}</Text></View>
+        <View style={styles.infoField}><Text style={styles.infoText}>Number : {userProfile.phoneNumber}</Text></View>
+        <View style={styles.infoField}><Text style={styles.infoText}>Address : {userProfile.address || 'N/A'}</Text></View>
       </View>
       {/* Edit Button */}
       <TouchableOpacity style={styles.editBtn}>
@@ -121,5 +168,48 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'monospace',
     textAlign: 'center',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#222',
+    fontFamily: 'monospace',
+  },
+  errorContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#ff0000',
+    fontFamily: 'monospace',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  retryButton: {
+    backgroundColor: '#b3e5fc',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'monospace',
+  },
+  noProfileContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noProfileText: {
+    fontSize: 18,
+    color: '#666',
+    fontFamily: 'monospace',
+    marginTop: 50,
   },
 });

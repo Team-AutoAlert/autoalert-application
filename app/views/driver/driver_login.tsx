@@ -1,21 +1,33 @@
 import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { useRouter } from 'expo-router';
+import { login } from "../../services/driver/auth_service";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DriverLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
+  const auth = useAuth();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in both fields.");
       return;
     }
-    // Example login logic (replace with real API call)
-    if (email === "mechanic@example.com" && password === "password123") {
-      Alert.alert("Success", "Logged in successfully!");
-      // Redirect logic here
+
+    const result = await login(email, password);
+
+    if (result.success) {
+      Alert.alert("Success", result.message);
+      console.log("login success");
+      if (result.token && result.user && result.user.email) {
+        await auth.login(result.user.email, result.token);
+      }
+      // The _layout.tsx will handle the navigation based on AuthContext state change
+      // router.replace({ pathname: '/views/driver/home' }); 
     } else {
-      Alert.alert("Error", "Invalid credentials.");
+      Alert.alert("Error", result.message);
     }
   };
 

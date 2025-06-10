@@ -1,79 +1,176 @@
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Image, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { getNearbyMechanics, hireMechanic } from '../../../services/driver/order_service';
 
-// Placeholder mechanic data
-const initialMechanics = [
-  { id: '1', name: 'Hashin', distance: '100m', rating: 3 },
-  { id: '2', name: 'Ramesh', distance: '150m', rating: 2 },
-  { id: '3', name: 'Udesh', distance: '160m', rating: 1 },
-  { id: '4', name: 'Gihantha', distance: '200m', rating: 3 },
-  { id: '5', name: 'Saman', distance: '250m', rating: 2 },
-  
-  { id: '6', name: 'Udesh', distance: '160m', rating: 1 },
-  { id: '7', name: 'Gihantha', distance: '200m', rating: 3 },
-  { id: '8', name: 'Saman', distance: '250m', rating: 2 },
-];
+interface Mechanic {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  distance: {
+    meters: number;
+    kilometers: string;
+  };
+  status: string;
+  profilePicture: string | null;
+  userId: string;
+}
 
 export default function MechanicListScreen() {
   const router = useRouter();
-  const [mechanics, setMechanics] = useState(initialMechanics);
+  const params = useLocalSearchParams();
+  const [mechanics, setMechanics] = useState<Mechanic[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleHire = (mechanicId: string) => {
-    console.log('Hiring mechanic:', mechanicId);
-    // TODO: Implement hire logic
-    // Navigate to the next screen, e.g., confirmation or tracking page
-    // router.push(`/views/driver/hire/${mechanicId}`);
+  const { userId, vehicleRegistrationNumber, problemDescription } = params;
+
+  useEffect(() => {
+    fetchNearbyMechanics();
+  }, []);
+
+  const fetchNearbyMechanics = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await getNearbyMechanics(userId as string);
+      
+      if (response.success) {
+        setMechanics(response.data);
+      } else {
+        setError('Failed to fetch nearby mechanics');
+      }
+    } catch (error) {
+      console.error('Error fetching mechanics:', error);
+      setError('Failed to load nearby mechanics. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleHire = async (mechanicId: string) => {
+    try {
+      console.log('Hiring mechanic with ID:', mechanicId); // Debug log
+      const response = await hireMechanic(
+        mechanicId, // This is the mechanic's userId from the list
+        userId as string,
+        vehicleRegistrationNumber as string,
+        problemDescription as string
+      );
+
+      if (response.success) {
+        console.log('Hire request successful, navigating to loading screen'); // Debug log
+        router.push({
+          pathname: './loading',
+          params: {
+            mechanicId: mechanicId, // Pass the mechanic's userId
+            hireRequestId: response.data._id, // Changed from orderId to hireRequestId
+            userId: userId // Pass the driver's userId
+          }
+        });
+      } else {
+        Alert.alert('Error', 'Failed to send hire request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error hiring mechanic:', error);
+      Alert.alert('Error', 'Failed to send hire request. Please try again.');
+    }
   };
 
   const handleBack = () => {
     router.back();
   };
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <Text style={styles.header}>Nearby Mechanics</Text>
+  const renderMechanicList = () => {
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#e53935" />
+          <Text style={styles.loadingText}>Finding nearby mechanics...</Text>
+        </View>
+      );
+    }
 
-      {/* Mechanic List */}
+    if (error) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchNearbyMechanics}>
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (mechanics.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No mechanics found nearby</Text>
+        </View>
+      );
+    }
+
+    return (
       <ScrollView style={styles.listContainer}>
         {mechanics.map((mechanic) => (
-          <View key={mechanic.id}>
+          <View key={mechanic._id}>
             <View style={styles.mechanicItem}>
-              {/* Mechanic Icon Placeholder */}
-              {/* Replace with an actual icon or image */}
-              <View style={styles.mechanicIconPlaceholder} />
+              <View style={styles.mechanicIconPlaceholder}>
+                {mechanic.profilePicture ? (
+                  <Image 
+                    source={{ uri: mechanic.profilePicture }} 
+                    style={styles.mechanicImage}
+                  />
+                ) : (
+                  <FontAwesome5 name="user" size={24} color="#fff" />
+                )}
+              </View>
 
               <View style={styles.mechanicDetails}>
-                <Text style={styles.mechanicName}>{mechanic.name}</Text>
-                <Text style={styles.mechanicDistance}>{mechanic.distance}</Text>
-                <View style={styles.starRatingContainer}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <FontAwesome5
-                      key={star}
-                      name={'star'}
-                      size={16}
-                      color="#ffc107" // Yellow color for stars
-                      solid={star <= mechanic.rating ? true : false}
-                      style={styles.starIcon}
-                    />
-                  ))}
+                <Text style={styles.mechanicName}>
+                  {mechanic.firstName} {mechanic.lastName}
+                </Text>
+                <Text style={styles.mechanicDistance}>
+                  {mechanic.distance.kilometers} km away
+                </Text>
+                <View style={styles.statusContainer}>
+                  <View style={[
+                    styles.statusIndicator,
+                    { backgroundColor: mechanic.status === 'active' ? '#4caf50' : '#ff9800' }
+                  ]} />
+                  <Text style={styles.statusText}>
+                    {mechanic.status === 'active' ? 'Available' : 'Busy'}
+                  </Text>
                 </View>
               </View>
 
-              {/* Hire Button */}
-              <TouchableOpacity style={styles.hireButton} onPress={() => handleHire(mechanic.id)}>
-                <Text style={styles.hireButtonText}>Hire</Text>
+              <TouchableOpacity 
+                style={[
+                  styles.hireButton,
+                  mechanic.status !== 'active' && styles.hireButtonDisabled
+                ]} 
+                onPress={() => handleHire(mechanic.userId)}
+                disabled={mechanic.status !== 'active'}
+                activeOpacity={0.7}
+              >
+                <Text style={[
+                  styles.hireButtonText,
+                  mechanic.status !== 'active' && styles.hireButtonTextDisabled
+                ]}>Hire</Text>
               </TouchableOpacity>
             </View>
-            {/* Separator */}
             <View style={styles.separator} />
           </View>
         ))}
       </ScrollView>
+    );
+  };
 
-      {/* Back Button */}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Nearby Mechanics</Text>
+      {renderMechanicList()}
       <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
@@ -134,18 +231,25 @@ const styles = StyleSheet.create({
     marginRight: 2,
   },
   hireButton: {
-    backgroundColor: '#a0c4ff', // Light blue background
+    backgroundColor: '#e53935',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#007bff', // Blue border
+    borderColor: '#e53935',
   },
   hireButtonText: {
     fontSize: 16,
-    color: '#212529', // Dark text
+    color: '#fff',
     fontFamily: 'monospace',
     fontWeight: 'bold',
+  },
+  hireButtonDisabled: {
+    backgroundColor: '#ccc',
+    borderColor: '#999',
+  },
+  hireButtonTextDisabled: {
+    color: '#666',
   },
   separator: {
     height: 1,
@@ -168,5 +272,71 @@ const styles = StyleSheet.create({
     color: '#212529', // Dark text
     fontFamily: 'monospace',
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+    fontFamily: 'monospace',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: '#e53935',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+    fontFamily: 'monospace',
+  },
+  retryButton: {
+    backgroundColor: '#e53935',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'monospace',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    fontFamily: 'monospace',
+  },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  statusIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 6,
+  },
+  statusText: {
+    fontSize: 14,
+    color: '#666',
+    fontFamily: 'monospace',
+  },
+  mechanicImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 25,
   },
 });
