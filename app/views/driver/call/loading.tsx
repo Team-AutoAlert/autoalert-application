@@ -1,27 +1,54 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useLocalSearchParams, router } from 'expo-router';
+import { checkSOSAlertStatus } from '../../../services/driver/order_service';
 
-export default function LoadingScreen() {
-  const router = useRouter();
+const LoadingScreen = () => {
+  const params = useLocalSearchParams();
   const [showSmsOption, setShowSmsOption] = useState(false);
   const [smsSent, setSmsSent] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Set a timer to show SMS options after 2 minutes
+    const smsTimer = setTimeout(() => {
       setShowSmsOption(true);
-    }, 120000); // 2 minutes (120000 milliseconds)
+    }, 120000); // 2 minutes
 
-    return () => clearTimeout(timer);
-  }, []);
+    // Poll for alert status every 5 seconds
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await checkSOSAlertStatus(params.alertId as string);
+        
+        if (response.success && response.data.status === 'in_progress') {
+          // Mechanic has accepted the alert
+          clearInterval(pollInterval);
+          clearTimeout(smsTimer);
+          
+          router.replace({
+            pathname: '/views/call/call-view',
+            params: {
+              role: 'driver',
+              alertId: params.alertId,
+              mechanicId: params.mechanicId,
+              issue: params.issue,
+              callType: params.callType,
+            },
+          });
+        }
+      } catch (error) {
+        console.error('Error checking alert status:', error);
+      }
+    }, 5000); // Check every 5 seconds
 
-  // TODO: Implement logic here to check for mechanic acceptance
-  // If mechanic accepts, navigate to the next screen, e.g.,
-  // router.push('/views/driver/call/mechanic_accepted');
+    return () => {
+      clearInterval(pollInterval);
+      clearTimeout(smsTimer);
+    };
+  }, [params.alertId]);
 
   const handleSendSms = () => {
     setSmsSent(true);
-    // TODO: Implement logic to send SMS here
+    // TODO: Implement SMS sending logic
   };
 
   return (
@@ -36,8 +63,8 @@ export default function LoadingScreen() {
         {showSmsOption && !smsSent && (
           <View style={styles.smsOptionContainer}>
             <Text style={styles.smsText}>
-              No one is has responded, do you want to send a normal SMS (this may
-              have additional charges? )
+              No one has responded, do you want to send a normal SMS (this may
+              have additional charges)?
             </Text>
             <TouchableOpacity style={styles.smsButton} onPress={handleSendSms}>
               <Text style={styles.smsButtonText}>SMS</Text>
@@ -47,36 +74,36 @@ export default function LoadingScreen() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000', // Dark background
+    backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
   },
   contentBox: {
     width: '100%',
-    backgroundColor: '#222', // Slightly lighter dark box
+    backgroundColor: '#222',
     borderRadius: 20,
     padding: 24,
     alignItems: 'center',
-    borderColor: '#fff', // White border
+    borderColor: '#fff',
     borderWidth: 2,
   },
   alertText: {
     fontSize: 24,
-    color: '#fff', // White text
-    fontFamily: 'monospace', // Closest to the UI font
+    color: '#fff',
+    fontFamily: 'monospace',
     textAlign: 'center',
     marginBottom: 16,
   },
   waitingText: {
     fontSize: 20,
-    color: '#fff', // White text
-    fontFamily: 'monospace', // Closest to the UI font
+    color: '#fff',
+    fontFamily: 'monospace',
     textAlign: 'center',
     marginBottom: 32,
   },
@@ -85,8 +112,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 4,
-    borderColor: 'red', // Red color
-    borderStyle: 'dotted', // Dotted style
+    borderColor: 'red',
+    borderStyle: 'dotted',
     marginBottom: 32,
   },
   smsOptionContainer: {
@@ -94,23 +121,25 @@ const styles = StyleSheet.create({
   },
   smsText: {
     fontSize: 18,
-    color: '#fff', // White text
-    fontFamily: 'monospace', // Closest to the UI font
+    color: '#fff',
+    fontFamily: 'monospace',
     textAlign: 'center',
     marginBottom: 20,
   },
   smsButton: {
-    backgroundColor: '#a0c4ff', // Light blue background
+    backgroundColor: '#a0c4ff',
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 40,
-    borderColor: '#fff', // White border
+    borderColor: '#fff',
     borderWidth: 2,
   },
   smsButtonText: {
     fontSize: 20,
-    color: '#fff', // White text
-    fontFamily: 'monospace', // Closest to the UI font
+    color: '#fff',
+    fontFamily: 'monospace',
     fontWeight: 'bold',
   },
 });
+
+export default LoadingScreen;

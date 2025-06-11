@@ -107,6 +107,13 @@ interface HireRequestStatusResponse {
   };
 }
 
+interface SOSAlertStatusResponse {
+  success: boolean;
+  data: {
+    status: string;
+  };
+}
+
 export const createSOSAlert = async (
   breakdownDetails: string,
   driverId: string,
@@ -212,6 +219,27 @@ export const checkHireRequestStatus = async (requestId: string): Promise<HireReq
     return data;
   } catch (error) {
     console.error('Error checking hire request status:', error);
+    throw error;
+  }
+};
+
+export const checkSOSAlertStatus = async (alertId: string): Promise<SOSAlertStatusResponse> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/sos-alerts/status/${alertId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: SOSAlertStatusResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error checking SOS alert status:', error);
     throw error;
   }
 };
