@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 const CreateBill = () => {
   const [timestamp, setTimestamp] = useState('');
   const [services, setServices] = useState<{ name: string; price: number }[]>([]);
   const [serviceName, setServiceName] = useState('');
   const [servicePrice, setServicePrice] = useState('');
+  const { jobId, mechanicId } = useLocalSearchParams();
 
   useEffect(() => {
     const now = new Date();
@@ -46,6 +48,8 @@ const CreateBill = () => {
         services: JSON.stringify(services),
         timestamp,
         total: total.toFixed(2),
+        jobId,
+        mechanicId,
       },
     });
   };

@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
-  StyleSheet, Dimensions, Alert
+  StyleSheet, Dimensions, Alert, RefreshControl
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import { FontAwesome5 } from "@expo/vector-icons"
-import { viewJobNotifications, acceptJobNotification } from '../../services/mechanic/order_service' // adjust path
+import { viewJobNotifications, acceptJobNotification } from '../../services/mechanic/order_service'
 
 const mechanicId = 'kkrmadhu1999@gmail.com' // Ideally fetched from auth context
 
@@ -15,21 +15,28 @@ const JobNotifications = () => {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedJob, setSelectedJob] = useState<any>(null)
   const [jobs, setJobs] = useState<any[]>([])
+  const [refreshing, setRefreshing] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await viewJobNotifications(mechanicId)
-        if (res.success) {
-          setJobs(res.data)
-        }
-      } catch (err) {
-        Alert.alert('Error', 'Could not fetch job notifications.')
+  const fetchJobs = async () => {
+    try {
+      const res = await viewJobNotifications(mechanicId)
+      if (res.success) {
+        setJobs(res.data)
       }
+    } catch (err) {
+      Alert.alert('Error', 'Could not fetch job notifications.')
     }
+  }
 
+  useEffect(() => {
     fetchJobs()
+  }, [])
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true)
+    await fetchJobs()
+    setRefreshing(false)
   }, [])
 
   const handleJobClick = (job: any) => {
@@ -38,32 +45,40 @@ const JobNotifications = () => {
   }
 
   const handleAccept = async () => {
-  try {
-    const response = await acceptJobNotification(selectedJob._id, mechanicId);
-    if (response.success) {
-      Alert.alert('Success', 'Job Accepted');
-      setModalVisible(false);
-      const [longitude, latitude] = selectedJob.driverLocation.coordinates;
-      router.push({
-        pathname: '/views/mechanic/locate_driver',
-        params: {
-          lat: latitude.toString(),
-          lng: longitude.toString(),
-        },
-      });
-    } else {
-      Alert.alert('Error', 'Job acceptance failed.');
+    try {
+      const response = await acceptJobNotification(selectedJob._id, mechanicId)
+      if (response.success) {
+        Alert.alert('Success', 'Job Accepted')
+        setModalVisible(false)
+        const [longitude, latitude] = selectedJob.driverLocation.coordinates
+        router.push({
+          pathname: '/views/mechanic/locate_driver',
+          params: {
+            lat: latitude.toString(),
+            lng: longitude.toString(),
+            jobId: selectedJob._id,
+            mechanicId: mechanicId,
+            driverId: selectedJob.driverId
+          },
+        })
+      } else {
+        Alert.alert('Error', 'Job acceptance failed.')
+      }
+    } catch (err) {
+      Alert.alert('Error', 'Failed to accept job')
     }
-  } catch (err) {
-    Alert.alert('Error', 'Failed to accept job');
   }
-};
-
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>🔔 Job Notifications</Text>
-      <ScrollView style={styles.scroll}>
+
+      <ScrollView
+        style={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {jobs.map((job) => (
           <TouchableOpacity key={job._id} style={styles.card} onPress={() => handleJobClick(job)}>
             <View style={styles.cardHeader}>
@@ -111,6 +126,7 @@ const JobNotifications = () => {
     </View>
   )
 }
+
 
 export default JobNotifications
 
