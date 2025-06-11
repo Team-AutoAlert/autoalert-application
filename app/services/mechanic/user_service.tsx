@@ -51,3 +51,35 @@ export const updateMechanicLocation = async (userId: string, lat: number, lng: n
 
   return await response.json();
 };
+
+export const uploadMechanicDocuments = async (
+  mechanicId: string,
+  nicUri: string
+): Promise<any> => {
+  const formData = new FormData();
+
+  // Append NIC Image
+  const filename = nicUri.split('/').pop() || 'nic_image.jpg';
+  const match = /\.(\w+)$/.exec(filename ?? '');
+  const type = match ? `image/${match[1]}` : 'image';
+
+  formData.append('nicDocument', {
+    uri: nicUri,
+    name: filename,
+    type: type,
+  } as any);
+
+  const response = await fetch(`${API_BASE_URL}/${mechanicId}/mechanic/documents`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to upload NIC document');
+  }
+
+  return await response.json();
+};
