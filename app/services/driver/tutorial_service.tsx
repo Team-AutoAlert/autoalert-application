@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://172.19.23.148:3004/api';
+import { API_CONFIG } from '../../config/api_config';
+
+const API_BASE_URL = `${API_CONFIG.DRIVER_BASE_URL}:3004/api`;
+
 
 export const fetchTutorials = async () => {
   try {

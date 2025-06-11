@@ -42,6 +42,8 @@ export default function ContactInfo() {
         firstName: firstName as string,
         lastName: lastName as string,
         phoneNumber: phoneNumber,
+        address: address,
+        language: language.toLowerCase().substring(0, 2), // Convert to language code (en, si, ta)
       };
 
       console.log('Attempting registration with data:', { ...userData, password: '***' });
