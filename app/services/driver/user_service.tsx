@@ -1,4 +1,7 @@
-const API_BASE_URL = 'http://172.19.23.148:3001/api';
+import { API_CONFIG } from '../../config/api_config';
+
+const API_BASE_URL = `${API_CONFIG.DRIVER_BASE_URL}:3001/api`;
+
 
 export const addVehicle = async (userId: string, vehicleData: {
   vehicleId: string;

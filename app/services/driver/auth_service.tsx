@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://172.19.23.148:3002/api/auth';
+import { API_CONFIG } from '../../config/api_config';
+
+const API_BASE_URL = `${API_CONFIG.DRIVER_BASE_URL}:3002/api/auth`;
 
 export const login = async (email: string, password: string) => {
   try {
@@ -29,6 +31,8 @@ export const register = async (userData: {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  address: string;
+  language: string;
 }) => {
   try {
     const response = await fetch(`${API_BASE_URL}/register`, {
@@ -37,13 +41,15 @@ export const register = async (userData: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: userData.email, // As per instruction, userId is same as email
+        userId: userData.email,
         email: userData.email,
         password: userData.password,
         role: 'driver',
         firstName: userData.firstName,
         lastName: userData.lastName,
         phoneNumber: userData.phoneNumber,
+        address: userData.address,
+        language: userData.language,
       }),
     });
 
