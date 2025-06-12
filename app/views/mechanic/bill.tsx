@@ -93,15 +93,7 @@ const BillPage = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() =>
-            router.push({
-              pathname: '/views/mechanic/payment_waiting',
-              params: {
-                total: serviceTotal.toFixed(2),
-                services: JSON.stringify(parsedServices),
-              },
-            })
-          }
+          onPress={handleSendBill}
           style={{
             backgroundColor: '#3B82F6',
             padding: 14,
