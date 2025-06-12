@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, RefreshControl, Alert as RNAlert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
-import { getActiveSOSAlerts, acceptSOSAlert, Alert } from '../../services/mechanic/order_service';
-
+import { getActiveSOSAlerts, acceptSOSAlert } from '../../services/mechanic/order_service';
 
 interface Alert {
   _id: string;
@@ -29,27 +28,31 @@ const SOSAlerts = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchAlerts = async () => {
-  const activeAlerts = await getActiveSOSAlerts();
-  setAlerts(activeAlerts);
-};
-
+    const activeAlerts = await getActiveSOSAlerts();
+    setAlerts(activeAlerts);
+  };
 
   const handleAccept = async (alert: Alert) => {
-  const success = await acceptSOSAlert(alert._id, 'kkrmadhu1999@gmail.com'); // Replace with actual mechanic ID
-  if (success) {
-    router.push({
-      pathname: '/views/mechanic/callScreen',
-      params: {
-        id: alert._id,
-        name: alert.driverId || 'Unknown Driver',
-        vehicle: alert.vehicleId || 'Unknown Vehicle',
-        issue: alert.breakdownDetails,
-        callType: alert.communicationMode,
-      },
-    });
-  }
-};
-
+    try {
+      const success = await acceptSOSAlert(alert._id, 'kkrmadhu1999@gmail.com'); // Replace with actual mechanic ID
+      if (success) {
+        router.push({
+          pathname: '/views/call/call-view',
+          params: {
+            role: 'mechanic',
+            alertId: alert._id,
+            driverId: alert.driverId,
+            vehicleId: alert.vehicleId,
+            issue: alert.breakdownDetails,
+            callType: alert.communicationMode,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error accepting alert:', error);
+      RNAlert.alert('Error', 'Failed to accept the alert. Please try again.');
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
