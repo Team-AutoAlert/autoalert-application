@@ -2,10 +2,14 @@ import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { useRouter } from "expo-router";
+import { uploadMechanicDocuments } from "../../services/mechanic/user_service"; // ✅ adjust import as needed
 
 export default function UploadNIC() {
   const [nicImage, setNicImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const router = useRouter();
+
+  const mechanicId = 'kkrmadhu1999@gmail.com'; // 🔐 Ideally, this comes from user context/auth
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -22,6 +26,22 @@ export default function UploadNIC() {
 
     if (!result.canceled && result.assets.length > 0) {
       setNicImage(result.assets[0].uri);
+    }
+  };
+
+  const handleUploadAndContinue = async () => {
+    if (!nicImage) return;
+
+    try {
+      setUploading(true);
+      await uploadMechanicDocuments(mechanicId, nicImage);
+      Alert.alert('Success', 'NIC uploaded successfully!');
+      router.push("/views/mechanic/select_specialization");
+    } catch (error: any) {
+      //Alert.alert("Upload Failed", error.message);
+      router.push("/views/mechanic/select_specialization");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -44,13 +64,13 @@ export default function UploadNIC() {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => router.push("/views/mechanic/select_specialization")}
-        className={`w-full py-4 rounded-xl ${
-          nicImage ? "bg-blue-600" : "bg-blue-300"
-        }`}
-        disabled={!nicImage}
+        onPress={handleUploadAndContinue}
+        className={`w-full py-4 rounded-xl ${nicImage ? "bg-blue-600" : "bg-blue-300"}`}
+        disabled={!nicImage || uploading}
       >
-        <Text className="text-white text-center text-base font-semibold">Next</Text>
+        <Text className="text-white text-center text-base font-semibold">
+          {uploading ? "Uploading..." : "Next"}
+        </Text>
       </TouchableOpacity>
     </View>
   );

@@ -30,9 +30,9 @@ const PaymentReceived = () => {
           width: '100%',
           alignItems: 'center',
         }}
-        onPress={() => router.push('/views/mechanic/mechanic_home')}
+        onPress={() => router.push('/views/mechanic/(tabs)')}
       >
-        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Complete the Job</Text>
+        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Back to Home</Text>
       </TouchableOpacity>
     </View>
   );

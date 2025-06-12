@@ -6,6 +6,9 @@ import { useState, useEffect } from "react";
 import { useRouter , useLocalSearchParams} from "expo-router";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+import { updateMechanicStatus, updateMechanicLocation  } from "../../../services/mechanic/user_service";
+import * as Location from "expo-location";
+
 
 type User = {
   displayName: string;
@@ -16,11 +19,33 @@ type User = {
 
 export default function MechanicHome() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [availability, setAvailability] = useState("Busy");
+  const [availability, setAvailability] = useState("Inactive");
   const router = useRouter();
 
   const params = useLocalSearchParams();
   const [user, setUser] = useState<User | null>(null);
+  const [itemValue, setItemValue] = useState("inactive");
+
+  const updateLocation = async () => {
+  try {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permission to access location was denied');
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+
+    if (user?.userId) {
+      await updateMechanicLocation(user.userId, latitude, longitude);
+      alert("Location updated successfully!");
+    }
+  } catch (error) {
+    console.error("Location update failed:", error);
+    alert("Failed to update location.");
+  }
+};
   
 
   useEffect(() => {
@@ -78,32 +103,42 @@ export default function MechanicHome() {
         <Text className="text-white text-xl ml-10 font-bold">Availability:</Text>
         <View className="bg-white rounded-full px-1 py-0 w-36 mt-1 mr-4">
           <Picker
-            selectedValue={availability}
-            onValueChange={(itemValue) => setAvailability(itemValue)}
-            style={{
-              height: 55,
-              width: 150,
-              color:
-                availability === "Busy"
-                  ? "#dc2626"
-                  : availability === "Available"
-                  ? "#16a34a"
-                  : "#d97706",
-              fontWeight: "bold",
+          selectedValue={availability}
+          onValueChange={async (itemValue) => {
+              setAvailability(itemValue);
+
+              if (!user?.userId) {
+                console.warn("User ID is missing. Status not updated.");
+                return;
+              }
+
+              try {
+                await updateMechanicStatus(user.userId, itemValue.toLowerCase());
+              } catch (err) {
+                console.warn("Failed to update status", err);
+              }
             }}
-            dropdownIconColor="black"
-          >
-            <Picker.Item label="Busy" value="Busy" />
-            <Picker.Item label="Available" value="Available" />
-            <Picker.Item label="On Break" value="On Break" />
-          </Picker>
+
+          style={{
+            height: 55,
+            width: 150,
+            color: itemValue === "Inactive" ? "#dc2626" : "#16a34a",
+            fontWeight: "bold",
+          }}
+          dropdownIconColor="black"
+        >
+          <Picker.Item label="Inactive" value="Inactive" />
+          <Picker.Item label="Active" value="Active" />
+        </Picker>
         </View>
       </View>
 
-      {/* Jobs Ongoing */}
-      <Text className="text-green-500 bg-white px-3 py-1 rounded-full w-40 text-center mb-4 mt-2 ml-20 font-semibold">
-        ● Jobs Ongoing
-      </Text>
+      <TouchableOpacity
+        onPress={updateLocation}
+        className="bg-yellow-400 px-4 py-2 rounded-full mb-4 mt-2 mx-auto"
+      >
+        <Text className="text-black font-bold">📍 Update Location</Text>
+      </TouchableOpacity>
 
       {/* Quick Action Buttons */}
       <View className="flex-row justify-between px-10 mb-4">

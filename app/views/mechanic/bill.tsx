@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
+import { completeServiceRequest } from '../../services/mechanic/order_service';
 
 const BillPage = () => {
   const { services, timestamp, total } = useLocalSearchParams();
+  const { jobId, mechanicId } = useLocalSearchParams();
 
   const parsedServices = JSON.parse(services as string) as { name: string; price: number }[];
   const serviceTotal = parseFloat(total as string);
@@ -14,6 +16,23 @@ const BillPage = () => {
   const commission = serviceTotal * commissionRate;
   const tax = serviceTotal * taxRate;
   const finalTotal = serviceTotal + commission + tax;
+
+  const handleSendBill = async () => {
+    try {
+      await completeServiceRequest(jobId as string, mechanicId as string, parsedServices);
+
+      router.push({
+        pathname: '/views/mechanic/payment_waiting',
+        params: {
+          total: serviceTotal.toFixed(2),
+          services: JSON.stringify(parsedServices),
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to send bill. Please try again.');
+    }
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2937', padding: 20 }}>
@@ -74,15 +93,7 @@ const BillPage = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() =>
-            router.push({
-              pathname: '/views/mechanic/payment_waiting',
-              params: {
-                total: serviceTotal.toFixed(2),
-                services: JSON.stringify(parsedServices),
-              },
-            })
-          }
+          onPress={handleSendBill}
           style={{
             backgroundColor: '#3B82F6',
             padding: 14,

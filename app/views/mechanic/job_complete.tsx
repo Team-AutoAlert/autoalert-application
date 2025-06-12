@@ -1,11 +1,21 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+
 
 const JobComplete = () => {
+  const { jobId, mechanicId } = useLocalSearchParams();
   const handleJobComplete = () => {
-    router.push('/views/mechanic/create_bill');
-  };
+  router.push({
+    pathname: '/views/mechanic/create_bill',
+    params: {
+      jobId,
+      mechanicId,
+    },
+  });
+};
+
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1F2937', padding: 20, justifyContent: 'center', alignItems: 'center' }}>

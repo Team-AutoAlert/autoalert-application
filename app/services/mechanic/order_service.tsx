@@ -118,3 +118,32 @@ export const acceptJobNotification = async (requestId: string, mechanicId: strin
   }
 };
 
+export const completeServiceRequest = async (
+  jobId: string,
+  mechanicId: string,
+  services: { name: string; price: number }[]
+) => {
+  const requestBody = {
+    requestId: jobId,
+    mechanicId: mechanicId,
+    services: services.map((service) => ({
+      name: service.name,
+      description: service.name, // description = name
+      charge: service.price,
+    })),
+  };
+
+  const response = await fetch(`${BASE_URL}/nearby-mechanics/requests/complete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to complete the service request');
+  }
+
+  return await response.json();
+};

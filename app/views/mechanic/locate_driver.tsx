@@ -14,6 +14,7 @@ export default function LocateDriverScreen() {
   const router = useRouter();
   const { driverId } = useLocalSearchParams(); // assuming driverId is passed
   const { lat, lng } = useLocalSearchParams();
+  const { jobId, mechanicId } = useLocalSearchParams();
   const [mechanicLocation, setMechanicLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [driverLocation, setDriverLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
@@ -58,11 +59,23 @@ export default function LocateDriverScreen() {
   useEffect(() => {
   if (driverLocation && mechanicLocation) {
     if (areLocationsEqual(driverLocation, mechanicLocation)) {
-      router.replace('/views/mechanic/job_complete');
+      router.replace({
+        pathname: '/views/mechanic/job_complete',
+        params: {
+          jobId,
+          mechanicId,
+        },
+      });
     } else {
       const timeout = setTimeout(() => {
-        router.replace('/views/mechanic/job_complete');
-      }, 50000); // 50 seconds
+        router.replace({
+          pathname: '/views/mechanic/job_complete',
+          params: {
+            jobId,
+            mechanicId,
+          },
+        });
+      }, 30000); // 30 seconds
 
       return () => clearTimeout(timeout); // cleanup on location change
     }
